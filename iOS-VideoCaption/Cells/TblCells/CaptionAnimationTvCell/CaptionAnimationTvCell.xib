@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="CaptionAnimationTvCell" rowHeight="67" id="KGk-i7-Jjw" customClass="CaptionAnimationTvCell" customModule="iOS_VideoCaption" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="271" height="67"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="271" height="67"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fyd-3Y-9ZC">
+                        <rect key="frame" x="0.0" y="10" width="271" height="57"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hey there, It's caption!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gb2-1d-4WM">
+                                <rect key="frame" x="51" y="15" width="169" height="27"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                <color key="textColor" name="Color_FFFFFF"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" name="Color_2C2C2C"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Gb2-1d-4WM" secondAttribute="bottom" constant="15" id="60U-r7-MlS"/>
+                            <constraint firstItem="Gb2-1d-4WM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Fyd-3Y-9ZC" secondAttribute="leading" constant="20" id="JwU-z3-YgF"/>
+                            <constraint firstItem="Gb2-1d-4WM" firstAttribute="top" secondItem="Fyd-3Y-9ZC" secondAttribute="top" constant="15" id="WAC-Ih-0ot"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gb2-1d-4WM" secondAttribute="trailing" constant="20" id="ddZ-sc-NKw"/>
+                            <constraint firstItem="Gb2-1d-4WM" firstAttribute="centerX" secondItem="Fyd-3Y-9ZC" secondAttribute="centerX" id="hd9-Qd-whO"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="Fyd-3Y-9ZC" secondAttribute="bottom" id="Cs9-bn-h6P"/>
+                    <constraint firstItem="Fyd-3Y-9ZC" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="RJa-oV-D6P"/>
+                    <constraint firstAttribute="trailing" secondItem="Fyd-3Y-9ZC" secondAttribute="trailing" id="qPf-GY-Xw3"/>
+                    <constraint firstItem="Fyd-3Y-9ZC" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="rZH-wu-JsZ"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="lbl_caption" destination="Gb2-1d-4WM" id="Gmb-86-5Yo"/>
+                <outlet property="view_caption" destination="Fyd-3Y-9ZC" id="ROk-b4-oak"/>
+            </connections>
+            <point key="canvasLocation" x="-148.85496183206106" y="108.80281690140846"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="Color_2C2C2C">
+            <color red="0.17299999296665192" green="0.17299999296665192" blue="0.17299999296665192" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Color_FFFFFF">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

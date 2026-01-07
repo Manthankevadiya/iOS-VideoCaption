@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25A354" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CaptionEntity" representedClassName="CaptionEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="borderColor" optional="YES" attributeType="String"/>
+        <attribute name="borderThickness" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="captionAnimationType" optional="YES" attributeType="String"/>
+        <attribute name="captionFontColor" optional="YES" attributeType="String"/>
+        <attribute name="captionFontName" optional="YES" attributeType="String"/>
+        <attribute name="captionFontSize" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="captionHighlightColor" optional="YES" attributeType="String"/>
+        <attribute name="captionPositionX" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="captionPositionY" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateLastEdited" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fullCaptionText" optional="YES" attributeType="String"/>
+        <attribute name="selectedLanguage" optional="YES" attributeType="String"/>
+        <attribute name="shadowColor" optional="YES" attributeType="String"/>
+        <attribute name="shadowRadius" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="timelineImages" optional="YES" attributeType="Binary"/>
+        <attribute name="totalDuration" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="videoID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="videoLink" optional="YES" attributeType="String"/>
+        <attribute name="videoName" optional="YES" attributeType="String"/>
+        <attribute name="videoThumbnail" optional="YES" attributeType="Binary"/>
+        <attribute name="wordsPerLine" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="words" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="TranscribedEntity" inverseName="project" inverseEntity="TranscribedEntity"/>
+    </entity>
+    <entity name="TranscribedEntity" representedClassName="TranscribedEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="endTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="text" optional="YES" attributeType="String"/>
+        <relationship name="project" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CaptionEntity" inverseName="words" inverseEntity="CaptionEntity"/>
+    </entity>
+</model>

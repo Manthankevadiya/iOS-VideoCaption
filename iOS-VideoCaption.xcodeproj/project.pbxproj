@@ -1,0 +1,648 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		070608EF2EE186B4005821EB /* AnimationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 070608EE2EE186AF005821EB /* AnimationExtension.swift */; };
+		0715B2722EB87B020074888C /* Caption.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0715B2712EB87B020074888C /* Caption.storyboard */; };
+		0715B2792EB885AB0074888C /* LanguageBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0715B2782EB885AB0074888C /* LanguageBottomSheet.swift */; };
+		07470EA62EC1A98100F089F7 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07470EA52EC1A98000F089F7 /* CoreDataManager.swift */; };
+		076AAACF2EDEA88900C49777 /* AnimatedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076AAACE2EDEA88900C49777 /* AnimatedTextView.swift */; };
+		076AAAD12EDEA8D800C49777 /* SwiftUITextAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076AAAD02EDEA8D700C49777 /* SwiftUITextAnimator.swift */; };
+		07A64C222EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07A64C102EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodeld */; };
+		07A64C232EB4DD7E00AE63A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A64C122EB4DD7E00AE63A3 /* AppDelegate.swift */; };
+		07A64C242EB4DD7E00AE63A3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A64C132EB4DD7E00AE63A3 /* SceneDelegate.swift */; };
+		07A64C252EB4DD7E00AE63A3 /* PickVideoPopUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A64C1B2EB4DD7E00AE63A3 /* PickVideoPopUp.swift */; };
+		07A64C272EB4DD7E00AE63A3 /* Colours.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A64C0D2EB4DD7E00AE63A3 /* Colours.xcassets */; };
+		07A64C282EB4DD7E00AE63A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A64C0E2EB4DD7E00AE63A3 /* Images.xcassets */; };
+		07A64C292EB4DD7E00AE63A3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07A64C162EB4DD7E00AE63A3 /* LaunchScreen.storyboard */; };
+		07A64C2A2EB4DD7E00AE63A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07A64C182EB4DD7E00AE63A3 /* Main.storyboard */; };
+		07A64C2B2EB4DD7E00AE63A3 /* Others.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07A64C192EB4DD7E00AE63A3 /* Others.storyboard */; };
+		07E1CE922EE6F5E4001F69B7 /* CaptionExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E1CE912EE6F5DE001F69B7 /* CaptionExport.swift */; };
+		8EF40AF3B0844806032C1ABC /* Pods_iOS_VideoCaption.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F522C103683DD139B7F01644 /* Pods_iOS_VideoCaption.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		070608EE2EE186AF005821EB /* AnimationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationExtension.swift; sourceTree = "<group>"; };
+		0715B2712EB87B020074888C /* Caption.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Caption.storyboard; sourceTree = "<group>"; };
+		0715B2782EB885AB0074888C /* LanguageBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageBottomSheet.swift; sourceTree = "<group>"; };
+		07470EA52EC1A98000F089F7 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		076AAACE2EDEA88900C49777 /* AnimatedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedTextView.swift; sourceTree = "<group>"; };
+		076AAAD02EDEA8D700C49777 /* SwiftUITextAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUITextAnimator.swift; sourceTree = "<group>"; };
+		07A64C0D2EB4DD7E00AE63A3 /* Colours.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colours.xcassets; sourceTree = "<group>"; };
+		07A64C0E2EB4DD7E00AE63A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		07A64C122EB4DD7E00AE63A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		07A64C132EB4DD7E00AE63A3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		07A64C152EB4DD7E00AE63A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		07A64C172EB4DD7E00AE63A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		07A64C192EB4DD7E00AE63A3 /* Others.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Others.storyboard; sourceTree = "<group>"; };
+		07A64C1B2EB4DD7E00AE63A3 /* PickVideoPopUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickVideoPopUp.swift; sourceTree = "<group>"; };
+		07A64C1F2EB4DD7E00AE63A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		07A64C212EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = iOS_VideoCaption.xcdatamodel; sourceTree = "<group>"; };
+		07A91DE72EAF356C00831057 /* iOS-VideoCaption.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-VideoCaption.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		07E1CE912EE6F5DE001F69B7 /* CaptionExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptionExport.swift; sourceTree = "<group>"; };
+		32CB94E7CB57FD898DB3B921 /* Pods-iOS-VideoCaption.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-VideoCaption.release.xcconfig"; path = "Target Support Files/Pods-iOS-VideoCaption/Pods-iOS-VideoCaption.release.xcconfig"; sourceTree = "<group>"; };
+		5693B149875ADE33F384BE29 /* Pods-iOS-VideoCaption.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iOS-VideoCaption.debug.xcconfig"; path = "Target Support Files/Pods-iOS-VideoCaption/Pods-iOS-VideoCaption.debug.xcconfig"; sourceTree = "<group>"; };
+		F522C103683DD139B7F01644 /* Pods_iOS_VideoCaption.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iOS_VideoCaption.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		0715B2732EB87B1D0074888C /* Main */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Main;
+			sourceTree = "<group>";
+		};
+		0715B2742EB87B250074888C /* Captions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Captions;
+			sourceTree = "<group>";
+		};
+		07470EAB2EC1BF6A00F089F7 /* Animations */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		07470F772EC20EE800F089F7 /* Managers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		07470F7C2EC20F0C00F089F7 /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		07A64C312EB4DE8F00AE63A3 /* Helpers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		07A64C352EB4DFCC00AE63A3 /* Cells */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Cells;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07A91DE42EAF356C00831057 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8EF40AF3B0844806032C1ABC /* Pods_iOS_VideoCaption.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		076AAACD2EDEA87500C49777 /* SwitUIAnimations */ = {
+			isa = PBXGroup;
+			children = (
+				07E1CE912EE6F5DE001F69B7 /* CaptionExport.swift */,
+				070608EE2EE186AF005821EB /* AnimationExtension.swift */,
+				076AAAD02EDEA8D700C49777 /* SwiftUITextAnimator.swift */,
+				076AAACE2EDEA88900C49777 /* AnimatedTextView.swift */,
+			);
+			path = SwitUIAnimations;
+			sourceTree = "<group>";
+		};
+		07A64C0F2EB4DD7E00AE63A3 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				07A64C0D2EB4DD7E00AE63A3 /* Colours.xcassets */,
+				07A64C0E2EB4DD7E00AE63A3 /* Images.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		07A64C112EB4DD7E00AE63A3 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				07470EA52EC1A98000F089F7 /* CoreDataManager.swift */,
+				07A64C102EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		07A64C142EB4DD7E00AE63A3 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				07A64C122EB4DD7E00AE63A3 /* AppDelegate.swift */,
+				07A64C132EB4DD7E00AE63A3 /* SceneDelegate.swift */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		07A64C1A2EB4DD7E00AE63A3 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				07A64C162EB4DD7E00AE63A3 /* LaunchScreen.storyboard */,
+				07A64C182EB4DD7E00AE63A3 /* Main.storyboard */,
+				07A64C192EB4DD7E00AE63A3 /* Others.storyboard */,
+				0715B2712EB87B020074888C /* Caption.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		07A64C1C2EB4DD7E00AE63A3 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				07A64C1B2EB4DD7E00AE63A3 /* PickVideoPopUp.swift */,
+				0715B2782EB885AB0074888C /* LanguageBottomSheet.swift */,
+			);
+			path = Others;
+			sourceTree = "<group>";
+		};
+		07A64C1E2EB4DD7E00AE63A3 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				0715B2742EB87B250074888C /* Captions */,
+				07A64C1C2EB4DD7E00AE63A3 /* Others */,
+				0715B2732EB87B1D0074888C /* Main */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		07A64C202EB4DD7E00AE63A3 /* iOS-VideoCaption */ = {
+			isa = PBXGroup;
+			children = (
+				076AAACD2EDEA87500C49777 /* SwitUIAnimations */,
+				07470F7C2EC20F0C00F089F7 /* Models */,
+				07470F772EC20EE800F089F7 /* Managers */,
+				07470EAB2EC1BF6A00F089F7 /* Animations */,
+				07A64C352EB4DFCC00AE63A3 /* Cells */,
+				07A64C0F2EB4DD7E00AE63A3 /* Assets */,
+				07A64C112EB4DD7E00AE63A3 /* CoreData */,
+				07A64C142EB4DD7E00AE63A3 /* Delegates */,
+				07A64C1A2EB4DD7E00AE63A3 /* Storyboards */,
+				07A64C1E2EB4DD7E00AE63A3 /* ViewControllers */,
+				07A64C1F2EB4DD7E00AE63A3 /* Info.plist */,
+				07A64C312EB4DE8F00AE63A3 /* Helpers */,
+			);
+			path = "iOS-VideoCaption";
+			sourceTree = "<group>";
+		};
+		07A91DDE2EAF356C00831057 = {
+			isa = PBXGroup;
+			children = (
+				07A64C202EB4DD7E00AE63A3 /* iOS-VideoCaption */,
+				07A91DE82EAF356C00831057 /* Products */,
+				4F544466055E765747B71535 /* Pods */,
+				6E3EDEE7963FCF40F8F4C348 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		07A91DE82EAF356C00831057 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07A91DE72EAF356C00831057 /* iOS-VideoCaption.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4F544466055E765747B71535 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5693B149875ADE33F384BE29 /* Pods-iOS-VideoCaption.debug.xcconfig */,
+				32CB94E7CB57FD898DB3B921 /* Pods-iOS-VideoCaption.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		6E3EDEE7963FCF40F8F4C348 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F522C103683DD139B7F01644 /* Pods_iOS_VideoCaption.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07A91DE62EAF356C00831057 /* iOS-VideoCaption */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07A91DFD2EAF356D00831057 /* Build configuration list for PBXNativeTarget "iOS-VideoCaption" */;
+			buildPhases = (
+				8A38770BF4192A891C9B21DE /* [CP] Check Pods Manifest.lock */,
+				07A91DE32EAF356C00831057 /* Sources */,
+				07A91DE42EAF356C00831057 /* Frameworks */,
+				07A91DE52EAF356C00831057 /* Resources */,
+				4E4B6DBF90779525E4430A62 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0715B2732EB87B1D0074888C /* Main */,
+				0715B2742EB87B250074888C /* Captions */,
+				07470EAB2EC1BF6A00F089F7 /* Animations */,
+				07470F772EC20EE800F089F7 /* Managers */,
+				07470F7C2EC20F0C00F089F7 /* Models */,
+				07A64C312EB4DE8F00AE63A3 /* Helpers */,
+				07A64C352EB4DFCC00AE63A3 /* Cells */,
+			);
+			name = "iOS-VideoCaption";
+			productName = "iOS-VideoCaption";
+			productReference = 07A91DE72EAF356C00831057 /* iOS-VideoCaption.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07A91DDF2EAF356C00831057 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					07A91DE62EAF356C00831057 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = 07A91DE22EAF356C00831057 /* Build configuration list for PBXProject "iOS-VideoCaption" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 07A91DDE2EAF356C00831057;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 07A91DE82EAF356C00831057 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07A91DE62EAF356C00831057 /* iOS-VideoCaption */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07A91DE52EAF356C00831057 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07A64C272EB4DD7E00AE63A3 /* Colours.xcassets in Resources */,
+				07A64C282EB4DD7E00AE63A3 /* Images.xcassets in Resources */,
+				0715B2722EB87B020074888C /* Caption.storyboard in Resources */,
+				07A64C292EB4DD7E00AE63A3 /* LaunchScreen.storyboard in Resources */,
+				07A64C2A2EB4DD7E00AE63A3 /* Main.storyboard in Resources */,
+				07A64C2B2EB4DD7E00AE63A3 /* Others.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4E4B6DBF90779525E4430A62 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-VideoCaption/Pods-iOS-VideoCaption-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iOS-VideoCaption/Pods-iOS-VideoCaption-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iOS-VideoCaption/Pods-iOS-VideoCaption-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8A38770BF4192A891C9B21DE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iOS-VideoCaption-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07A91DE32EAF356C00831057 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07E1CE922EE6F5E4001F69B7 /* CaptionExport.swift in Sources */,
+				076AAACF2EDEA88900C49777 /* AnimatedTextView.swift in Sources */,
+				0715B2792EB885AB0074888C /* LanguageBottomSheet.swift in Sources */,
+				07A64C222EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodeld in Sources */,
+				07A64C232EB4DD7E00AE63A3 /* AppDelegate.swift in Sources */,
+				070608EF2EE186B4005821EB /* AnimationExtension.swift in Sources */,
+				07A64C242EB4DD7E00AE63A3 /* SceneDelegate.swift in Sources */,
+				07A64C252EB4DD7E00AE63A3 /* PickVideoPopUp.swift in Sources */,
+				07470EA62EC1A98100F089F7 /* CoreDataManager.swift in Sources */,
+				076AAAD12EDEA8D800C49777 /* SwiftUITextAnimator.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		07A64C162EB4DD7E00AE63A3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07A64C152EB4DD7E00AE63A3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		07A64C182EB4DD7E00AE63A3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07A64C172EB4DD7E00AE63A3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		07A91DFE2EAF356D00831057 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5693B149875ADE33F384BE29 /* Pods-iOS-VideoCaption.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = HM79Y5Y3BL;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS-VideoCaption/Info.plist";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to record videos.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio with your video.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save the exported video.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your library to select videos.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.video.caption.creator.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Video Caption Dev Provision Certificate";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		07A91DFF2EAF356D00831057 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 32CB94E7CB57FD898DB3B921 /* Pods-iOS-VideoCaption.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = HM79Y5Y3BL;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS-VideoCaption/Info.plist";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to record videos.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs microphone access to record audio with your video.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to save the exported video.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app needs access to your library to select videos.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.video.caption.creator.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Video Caption Dev Provision Certificate";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		07A91E002EAF356D00831057 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4557F7P992;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		07A91E012EAF356D00831057 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4557F7P992;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07A91DE22EAF356C00831057 /* Build configuration list for PBXProject "iOS-VideoCaption" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07A91E002EAF356D00831057 /* Debug */,
+				07A91E012EAF356D00831057 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07A91DFD2EAF356D00831057 /* Build configuration list for PBXNativeTarget "iOS-VideoCaption" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07A91DFE2EAF356D00831057 /* Debug */,
+				07A91DFF2EAF356D00831057 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		07A64C102EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				07A64C212EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodel */,
+			);
+			currentVersion = 07A64C212EB4DD7E00AE63A3 /* iOS_VideoCaption.xcdatamodel */;
+			path = iOS_VideoCaption.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 07A91DDF2EAF356C00831057 /* Project object */;
+}
