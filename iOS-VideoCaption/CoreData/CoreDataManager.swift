@@ -177,13 +177,14 @@ extension CoreDataManager {
         saveContext()
     }
     
-    func updateCaptionStyle(project: CaptionEntity, fontName: String,fontSize: Float, fontColor: String, fontHighlightColor: String, animationType: String, borderColor: String) {
+    func updateCaptionStyle(project: CaptionEntity, fontName: String,fontSize: Float, fontColor: String, fontHighlightColor: String, animationType: String, borderColor: String, borderThick: Float) {
         project.captionFontName = fontName
         project.captionFontSize = fontSize
         project.captionFontColor = fontColor
         project.captionHighlightColor = fontHighlightColor
         project.captionAnimationType = animationType
         project.borderColor = borderColor
+        project.borderThickness = borderThick
         
         project.dateLastEdited = Date()
         saveContext()

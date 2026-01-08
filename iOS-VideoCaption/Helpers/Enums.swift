@@ -34,6 +34,7 @@ enum CaptionColorType {
     case fontColor
     case highlightColor
     case borderColor
+    case shadowColor
 }
 
 enum TypingAnimationType {

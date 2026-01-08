@@ -68,6 +68,14 @@ class CaptionVC: UIViewController {
     let autoHideDelay: TimeInterval = 2
     var captionWidthConstraint: NSLayoutConstraint?
     
+    var selectionOverlay: CaptionSelectionOverlay?
+    var isCaptionSelected: Bool = false {
+        didSet {
+            selectionOverlay?.isHidden = !isCaptionSelected
+        }
+    }
+    private var captionSelectionHideTimer: Timer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpVideoPlayer()
@@ -165,6 +173,7 @@ class CaptionVC: UIViewController {
         let highlightColor = UIColor(hex: self.project.captionHighlightColor ?? "FFFFFF")
         let borderColor = UIColor(hex: self.project.borderColor ?? "000000")
         let borderWidth = CGFloat(self.project.borderThickness)
+        let shadowColor = UIColor(hex: self.project.shadowColor ?? "000000")
         
         let config = ExportConfiguration(
             videoURL: videoURL,
@@ -177,7 +186,7 @@ class CaptionVC: UIViewController {
             highlightColor: highlightColor,
             borderColor: borderColor,
             borderWidth: borderWidth,
-            
+            shadowColor: shadowColor,
             defaultWordDuration: 0.3,
             
             // Use the videoRect.size as the reference canvas,
@@ -550,24 +559,40 @@ extension CaptionVC {
     func setUpCaptionContainer() {
         guard let playerView = self.view_videoContainer else { return }
         
-        // 1. Prepare views and add to hierarchy
+        // 1. Prepare views
         self.view_animatedCaptionContainer.translatesAutoresizingMaskIntoConstraints = false
         self.lbl_animatedCaption.translatesAutoresizingMaskIntoConstraints = false
         
         playerView.addSubview(self.view_animatedCaptionContainer)
         self.view_animatedCaptionContainer.addSubview(self.lbl_animatedCaption)
         
-        let verticalPadding: CGFloat = 8
-        let horizontalPadding: CGFloat = 4
+        // 2. NEW: Add the Selection Overlay
+        let overlay = CaptionSelectionOverlay()
+        overlay.translatesAutoresizingMaskIntoConstraints = false
+        overlay.isHidden = true // Hidden by default
+        self.selectionOverlay = overlay
+        self.view_animatedCaptionContainer.addSubview(overlay)
+        
+        // 3. Pin Overlay to container edges
+        NSLayoutConstraint.activate([
+            overlay.topAnchor.constraint(equalTo: view_animatedCaptionContainer.topAnchor),
+            overlay.bottomAnchor.constraint(equalTo: view_animatedCaptionContainer.bottomAnchor),
+            overlay.leadingAnchor.constraint(equalTo: view_animatedCaptionContainer.leadingAnchor),
+            overlay.trailingAnchor.constraint(equalTo: view_animatedCaptionContainer.trailingAnchor)
+        ])
+        
+        // 4. Setup Label Constraints (with slightly more padding for handles)
+        let verticalPadding: CGFloat = 12
+        let horizontalPadding: CGFloat = 10
         
         NSLayoutConstraint.activate([
             self.lbl_animatedCaption.centerXAnchor.constraint(equalTo: self.view_animatedCaptionContainer.centerXAnchor),
             self.lbl_animatedCaption.widthAnchor.constraint(lessThanOrEqualTo: self.view_animatedCaptionContainer.widthAnchor, constant: -(horizontalPadding * 2)),
-            
             self.lbl_animatedCaption.topAnchor.constraint(equalTo: self.view_animatedCaptionContainer.topAnchor, constant: verticalPadding / 2),
             self.lbl_animatedCaption.bottomAnchor.constraint(equalTo: self.view_animatedCaptionContainer.bottomAnchor, constant: -verticalPadding / 2)
         ])
         
+        // 5. Setup Container Position Constraints
         let centerXConstraint = self.view_animatedCaptionContainer.centerXAnchor.constraint(equalTo: playerView.centerXAnchor, constant: 0)
         let centerYConstraint = self.view_animatedCaptionContainer.centerYAnchor.constraint(equalTo: playerView.topAnchor, constant: playerView.bounds.midY)
         
@@ -577,15 +602,8 @@ extension CaptionVC {
         let widthConstraint = self.view_animatedCaptionContainer.widthAnchor.constraint(lessThanOrEqualToConstant: playerView.bounds.width * 0.95)
         self.captionWidthConstraint = widthConstraint
         
-        if let videoRect = self.calculateVideoRect(in: playerView) as CGRect? {
-            // Make caption at most 90% of video width
-            self.view_animatedCaptionContainer.widthAnchor
-                .constraint(lessThanOrEqualToConstant: videoRect.width * 0.9)
-                .isActive = true
-        }
-        
         NSLayoutConstraint.activate([
-            widthConstraint, // Activate our variable constraint
+            widthConstraint,
             centerXConstraint,
             centerYConstraint
         ])
@@ -593,8 +611,27 @@ extension CaptionVC {
         self.view_animatedCaptionContainer.heroID = "captionLabel"
         self.updateCaptionLabelStyle()
         
+        // 6. GESTURES: Pan for moving AND Tap for selecting
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture(_:)))
         self.view_animatedCaptionContainer.addGestureRecognizer(panGesture)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.handleCaptionTap))
+        self.view_animatedCaptionContainer.addGestureRecognizer(tapGesture)
+        
+        // Tap on video background to deselect
+        let backgroundTap = UITapGestureRecognizer(target: self, action: #selector(self.handleBackgroundTap))
+        playerView.addGestureRecognizer(backgroundTap)
+    }
+    
+    @objc func handleCaptionTap() {
+        self.isCaptionSelected = true
+        // If the user just taps, we start the timer to hide it after 2 seconds
+        self.startCaptionHideTimer()
+    }
+    
+    @objc func handleBackgroundTap() {
+        self.captionSelectionHideTimer?.invalidate()
+        self.isCaptionSelected = false
     }
     
     func updateCaptionLabelStyle() {
@@ -689,67 +726,66 @@ extension CaptionVC {
     }
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        let captionView = gesture.view!
-        guard let boundsView = self.view_videoContainer,
-              let centerXConstraint = self.captionCenterXConstraint,
-              let centerYConstraint = self.captionCenterYConstraint,
-              let guides = self.guideManager else { return } // Unwrap Manager
-        
-        captionView.layoutIfNeeded()
-        
-        let translation = gesture.translation(in: boundsView)
-        let videoRect = self.calculateVideoRect(in: boundsView)
-        
-        // 1. Calculate Proposed Position
-        let playerViewCenterX = boundsView.bounds.midX
-        let startCenterX = playerViewCenterX + centerXConstraint.constant
-        
-        var proposedX = startCenterX + translation.x
-        var proposedY = centerYConstraint.constant + translation.y
-        
-        // 2. Clamp (Keep inside video)
-        let halfW = captionView.bounds.width / 2.0
-        let halfH = captionView.bounds.height / 2.0
-        
-        let minX = videoRect.minX + halfW
-        let maxX = videoRect.maxX - halfW
-        let minY = videoRect.minY + halfH
-        let maxY = videoRect.maxY - halfH
-        
-        if minX < maxX {
-            proposedX = max(minX, min(maxX, proposedX))
-        } else {
-            proposedX = videoRect.midX
+            let captionView = gesture.view!
+            guard let boundsView = self.view_videoContainer,
+                  let centerXConstraint = self.captionCenterXConstraint,
+                  let centerYConstraint = self.captionCenterYConstraint,
+                  let guides = self.guideManager else { return }
+            
+            captionView.layoutIfNeeded()
+            let translation = gesture.translation(in: boundsView)
+            let videoRect = self.calculateVideoRect(in: boundsView)
+            
+            let playerViewCenterX = boundsView.bounds.midX
+            let startCenterX = playerViewCenterX + centerXConstraint.constant
+            
+            var proposedX = startCenterX + translation.x
+            var proposedY = centerYConstraint.constant + translation.y
+            
+            // Clamping logic...
+            let halfW = captionView.bounds.width / 2.0
+            let halfH = captionView.bounds.height / 2.0
+            let minX = videoRect.minX + halfW
+            let maxX = videoRect.maxX - halfW
+            let minY = videoRect.minY + halfH
+            let maxY = videoRect.maxY - halfH
+            
+            if minX < maxX {
+                proposedX = max(minX, min(maxX, proposedX))
+            } else {
+                proposedX = videoRect.midX
+            }
+            proposedY = max(minY, min(maxY, proposedY))
+            
+            switch gesture.state {
+            case .began:
+                // 1. Show the box immediately and stop any pending hide timer
+                self.isCaptionSelected = true
+                self.captionSelectionHideTimer?.invalidate()
+                guides.beginDrag(videoRect: videoRect)
+                
+            case .changed:
+                let snapped = guides.updateDrag(currentCenter: CGPoint(x: proposedX, y: proposedY),
+                                               videoRect: videoRect)
+                
+                centerXConstraint.constant = snapped.x - playerViewCenterX
+                centerYConstraint.constant = snapped.y
+                gesture.setTranslation(.zero, in: boundsView)
+                
+            case .ended, .cancelled:
+                guides.endDrag()
+                
+                // 2. Save position
+                let finalX = playerViewCenterX + centerXConstraint.constant
+                let finalY = centerYConstraint.constant
+                self.saveCurrentCaptionPosition(centerX: finalX, centerY: finalY, in: boundsView)
+                
+                // 3. START THE TIMER when user stops moving
+                self.startCaptionHideTimer()
+                
+            default: break
+            }
         }
-        proposedY = max(minY, min(maxY, proposedY))
-        
-        // 3. HAND OFF TO GUIDE MANAGER
-        switch gesture.state {
-        case .began:
-            guides.beginDrag(videoRect: videoRect)
-            
-        case .changed:
-            // This function checks snapping and updates visuals automatically!
-            let snapped = guides.updateDrag(currentCenter: CGPoint(x: proposedX, y: proposedY),
-                                            videoRect: videoRect)
-            
-            // Apply Snapped Position
-            centerXConstraint.constant = snapped.x - playerViewCenterX
-            centerYConstraint.constant = snapped.y
-            
-            gesture.setTranslation(.zero, in: boundsView)
-            
-        case .ended, .cancelled:
-            guides.endDrag()
-            
-            // Save final position (using constraints which are now snapped)
-            let finalX = playerViewCenterX + centerXConstraint.constant
-            let finalY = centerYConstraint.constant
-            self.saveCurrentCaptionPosition(centerX: finalX, centerY: finalY, in: boundsView)
-            
-        default: break
-        }
-    }
     
     func saveCurrentCaptionPosition(centerX: CGFloat, centerY: CGFloat, in playerView: UIView) {
         let videoRect = self.calculateVideoRect(in: playerView)
@@ -771,6 +807,19 @@ extension CaptionVC {
         
         print("Caption Position Saved: X=\(String(format: "%.3f", normalizedX)), Y=\(String(format: "%.3f", normalizedY))")
     }
+    
+    
+    private func startCaptionHideTimer() {
+            // Invalidate any existing timer first
+            self.captionSelectionHideTimer?.invalidate()
+            
+            // Start a new timer for 1 or 2 seconds (VN/Canva usually wait 1.5 - 2s)
+            self.captionSelectionHideTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { [weak self] _ in
+                UIView.animate(withDuration: 0.3) {
+                    self?.isCaptionSelected = false
+                }
+            }
+        }
     
 }
 
@@ -889,4 +938,75 @@ extension CaptionVC {
         return CGFloat(thickness)
     }
     
+}
+
+
+
+
+
+class CaptionSelectionOverlay: UIView {
+    private let borderLayer = CAShapeLayer()
+    private let handleSize: CGFloat = 12.0
+    private let sideHandleWidth: CGFloat = 10
+    private let sideHandleHeight: CGFloat = 20.0
+    
+    var themeColor: UIColor = .white
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupOverlay()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupOverlay()
+    }
+
+    private func setupOverlay() {
+        // IMPORTANT: This allows your PanGesture on the container to work!
+        self.isUserInteractionEnabled = false
+        
+        borderLayer.strokeColor = themeColor.cgColor
+        borderLayer.fillColor = nil
+        borderLayer.lineWidth = 2.5
+        borderLayer.lineDashPattern = [4, 3]
+        layer.addSublayer(borderLayer)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        borderLayer.path = UIBezierPath(rect: bounds).cgPath
+        borderLayer.frame = bounds
+        updateHandles()
+    }
+
+    private func updateHandles() {
+        subviews.forEach { $0.removeFromSuperview() }
+        
+        // 1. Corner Dots
+        let corners = [
+            CGPoint(x: 0, y: 0),
+            CGPoint(x: bounds.width, y: 0),
+            CGPoint(x: 0, y: bounds.height),
+            CGPoint(x: bounds.width, y: bounds.height)
+        ]
+        corners.forEach { createHandle(at: $0, size: CGSize(width: handleSize, height: handleSize), isCircle: true) }
+        
+        // 2. Side Handles
+        let sides = [
+            CGPoint(x: 0, y: bounds.height / 2),
+            CGPoint(x: bounds.width, y: bounds.height / 2)
+        ]
+        sides.forEach { createHandle(at: $0, size: CGSize(width: sideHandleWidth, height: sideHandleHeight), isCircle: false) }
+    }
+
+    private func createHandle(at point: CGPoint, size: CGSize, isCircle: Bool) {
+        let handle = UIView(frame: CGRect(origin: .zero, size: size))
+        handle.backgroundColor = .white
+        handle.layer.borderColor = themeColor.cgColor
+        handle.layer.borderWidth = 1.5
+        handle.center = point
+        handle.layer.cornerRadius = isCircle ? size.width / 2 : 2
+        addSubview(handle)
+    }
 }

@@ -126,6 +126,7 @@ extension UILabel {
         fontSize: CGFloat? = nil,
         borderWidth: CGFloat = 0.0,
         borderColor: UIColor = .clear,
+        shadowColor: UIColor? = nil,
         fontName: String = "",
         fontColor: UIColor? = nil
     ) {
@@ -154,6 +155,10 @@ extension UILabel {
         
         if let hColor = highlightColor {
             animator.highlightColor = hColor
+        }
+        
+        if let sColor = shadowColor {
+            animator.shadowcolor = sColor
         }
         
         if let fColor = fontColor {

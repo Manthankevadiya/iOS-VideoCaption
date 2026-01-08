@@ -30,6 +30,8 @@ class EditCaptionStyleVC: UIViewController {
     @IBOutlet weak var segment_colours: UISegmentedControl!
     @IBOutlet weak var cv_colours: UICollectionView!
     
+    @IBOutlet weak var slider_textborder: UISlider!
+    
     // MARK: Varibales
     var selectedEditStyle : EditCaptionType = .animationStyle
     var selectedColourType : CaptionColorType = .fontColor
@@ -57,6 +59,8 @@ class EditCaptionStyleVC: UIViewController {
     var selectedFontColour = String()
     var selectedHighlightColour = String()
     var selectedBorderColour = String()
+    var selectedShadowColour = String()
+    var selectedBorderSize = CGFloat()
     
     var fontNames: [String] = {
         var names: [String] = []
@@ -79,6 +83,7 @@ class EditCaptionStyleVC: UIViewController {
         self.setUpColorTypeSelection()
         self.setUpPickerView()
         self.setUpFontSlider()
+        self.setUpBorderSlider()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -97,13 +102,16 @@ class EditCaptionStyleVC: UIViewController {
     
     func setUpData() {
         self.selectedFontSize = CGFloat(self.project.captionFontSize)
+        self.selectedBorderSize = CGFloat(self.project.borderThickness)
         self.selectedFont = UIFont(name: self.project.captionFontName ?? "", size: self.selectedFontSize)
         
         self.selectedFontColour = self.project.captionFontColor ?? ""
         self.selectedHighlightColour = self.project.captionHighlightColor ?? ""
         self.selectedBorderColour = self.project.borderColor ?? ""
+        self.selectedShadowColour = self.project.shadowColor ?? ""
         
         self.lbl_caption.font = self.selectedFont?.withSize(self.selectedFontSize)
+        self.lbl_caption.layer.borderWidth = self.selectedBorderSize
         self.lbl_caption.textColor = UIColor(hex: self.selectedFontColour)
         
         self.hero.isEnabled = true
@@ -209,8 +217,9 @@ class EditCaptionStyleVC: UIViewController {
                 isDemo: true,
                 wordDuration: demoWordDuration,
                 fontSize: self.selectedFontSize,
-                borderWidth: 0,
+                borderWidth: selectedBorderSize,
                 borderColor: UIColor(hex: self.selectedBorderColour),
+                shadowColor: UIColor(hex: self.selectedShadowColour),
                 fontName: fontName,
                 fontColor: fontColor
             )
@@ -221,7 +230,7 @@ class EditCaptionStyleVC: UIViewController {
                 isDemo: true,
                 wordDuration: demoWordDuration,
                 fontSize: self.selectedFontSize,
-                borderWidth: 0,
+                borderWidth: selectedBorderSize,
                 borderColor: UIColor(hex: self.selectedBorderColour),
                 fontName: fontName,
                 fontColor: fontColor
@@ -280,9 +289,23 @@ class EditCaptionStyleVC: UIViewController {
         self.slider_fontSize.addTarget(self, action: #selector(self.fontSizeSliderChanged(_:)), for: .valueChanged)
     }
     
+    func setUpBorderSlider() {
+        self.slider_textborder.minimumValue = 0
+        self.slider_textborder.maximumValue = 2
+        self.slider_textborder.value = Float(self.selectedBorderSize)
+        self.slider_textborder.addTarget(self, action: #selector(self.fontBorderSliderChanged(_:)), for: .valueChanged)
+    }
+    
     @objc func fontSizeSliderChanged(_ sender: UISlider) {
         self.selectedFontSize = CGFloat(sender.value)
         self.lbl_caption.font = self.selectedFont?.withSize(self.selectedFontSize)
+        
+        self.setSelctedCaptionContainer()
+    }
+    
+    @objc func fontBorderSliderChanged(_ sender: UISlider) {
+        self.selectedBorderSize = CGFloat(sender.value)
+        self.lbl_caption.font = self.selectedFont?.withSize(self.selectedBorderSize)
         
         self.setSelctedCaptionContainer()
     }
@@ -306,10 +329,16 @@ class EditCaptionStyleVC: UIViewController {
         switch sender.selectedSegmentIndex {
         case 0:
             self.selectedColourType = .fontColor
+            self.slider_textborder.isHidden = true
         case 1:
             self.selectedColourType = .highlightColor
+            self.slider_textborder.isHidden = true
         case 2:
             self.selectedColourType = .borderColor
+            self.slider_textborder.isHidden = false
+        case 3:
+            self.selectedColourType = .shadowColor
+            self.slider_textborder.isHidden = true
         default:
             break
         }
@@ -322,7 +351,7 @@ class EditCaptionStyleVC: UIViewController {
     }
     
     @IBAction func clickOnDone(_ sender: Any) {
-        CoreDataManager.shared.updateCaptionStyle(project: self.project, fontName: self.selectedFont?.fontName ?? "", fontSize: Float(self.selectedFontSize), fontColor: self.selectedFontColour, fontHighlightColor: self.selectedHighlightColour, animationType: captionAnimationStyles[self.selectedAnimationIndex].rawValue, borderColor: self.selectedBorderColour)
+        CoreDataManager.shared.updateCaptionStyle(project: self.project, fontName: self.selectedFont?.fontName ?? "", fontSize: Float(self.selectedFontSize), fontColor: self.selectedFontColour, fontHighlightColor: self.selectedHighlightColour, animationType: captionAnimationStyles[self.selectedAnimationIndex].rawValue, borderColor: self.selectedBorderColour, borderThick: Float(self.selectedBorderSize))
         self.clickedOnDone?()
         self.dismiss(animated: true)
     }
@@ -439,6 +468,8 @@ extension EditCaptionStyleVC {
             index = self.colourNames.firstIndex(where: { $0 == self.selectedHighlightColour })
         case .borderColor:
             index = self.colourNames.firstIndex(where: { $0 == self.selectedBorderColour })
+        case .shadowColor:
+            index = self.colourNames.firstIndex(where: { $0 == self.selectedShadowColour })
         }
         
         guard let idx = index else { return }
@@ -469,6 +500,8 @@ extension EditCaptionStyleVC: UICollectionViewDelegate, UICollectionViewDataSour
             isSelected = self.selectedHighlightColour == self.colourNames[indexPath.row]
         case .borderColor:
             isSelected = self.selectedBorderColour == self.colourNames[indexPath.row]
+        case .shadowColor:
+            isSelected = self.selectedShadowColour == self.colourNames[indexPath.row]
         }
         
         cell.configure(with: obj, isSelected: isSelected)
@@ -484,6 +517,8 @@ extension EditCaptionStyleVC: UICollectionViewDelegate, UICollectionViewDataSour
             self.selectedHighlightColour = self.colourNames[indexPath.row]
         case .borderColor:
             self.selectedBorderColour = self.colourNames[indexPath.row]
+        case .shadowColor:
+            self.selectedShadowColour = self.colourNames[indexPath.row]
         }
         
         self.lbl_caption.textColor = UIColor(hex: self.selectedFontColour)

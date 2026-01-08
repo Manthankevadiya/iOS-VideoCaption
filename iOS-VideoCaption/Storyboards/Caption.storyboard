@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24127" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -441,10 +441,10 @@
                                         <rect key="frame" x="0.0" y="50" width="375" height="203.5"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TMe-dT-KGF">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="203.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="153.5"/>
                                                 <subviews>
                                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hwT-kp-R0n">
-                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="203.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="375" height="153.5"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lsv-4w-cd1">
                                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="1360"/>
@@ -863,7 +863,7 @@
                                                 </constraints>
                                             </view>
                                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Kq-Cx-HCS">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="153.5" width="375" height="0.0"/>
                                                 <subviews>
                                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5bJ-mE-uoH">
                                                         <rect key="frame" x="16" y="0.0" width="343" height="0.0"/>
@@ -877,16 +877,17 @@
                                                     <constraint firstAttribute="bottom" secondItem="5bJ-mE-uoH" secondAttribute="bottom" id="zuT-oc-Sbl"/>
                                                 </constraints>
                                             </view>
-                                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iRi-oE-Mck">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="0.0"/>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iRi-oE-Mck">
+                                                <rect key="frame" x="0.0" y="153.5" width="375" height="50"/>
                                                 <subviews>
                                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="lhj-uu-Pc4">
-                                                        <rect key="frame" x="75" y="25" width="225" height="1"/>
+                                                        <rect key="frame" x="56.5" y="25" width="262.5" height="8.5"/>
                                                         <color key="backgroundColor" name="Color_353535"/>
                                                         <segments>
                                                             <segment title="Captions"/>
                                                             <segment title="Highlight"/>
                                                             <segment title="Border"/>
+                                                            <segment title="Shadow"/>
                                                         </segments>
                                                         <color key="selectedSegmentTintColor" name="Color_8137FF"/>
                                                         <connections>
@@ -894,7 +895,7 @@
                                                         </connections>
                                                     </segmentedControl>
                                                     <collectionView multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="du4-sn-oGl">
-                                                        <rect key="frame" x="0.0" y="70" width="375" height="60"/>
+                                                        <rect key="frame" x="0.0" y="77.5" width="375" height="60"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="60" id="o4d-lq-ovQ"/>
@@ -908,11 +909,18 @@
                                                         </collectionViewFlowLayout>
                                                         <cells/>
                                                     </collectionView>
+                                                    <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="1" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ldg-Ef-rUl">
+                                                        <rect key="frame" x="20" y="172.5" width="335" height="34"/>
+                                                        <color key="tintColor" name="Color_8137FF"/>
+                                                    </slider>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
-                                                    <constraint firstItem="lhj-uu-Pc4" firstAttribute="width" secondItem="iRi-oE-Mck" secondAttribute="width" multiplier="0.6" id="4lj-ke-XYF"/>
+                                                    <constraint firstItem="lhj-uu-Pc4" firstAttribute="width" secondItem="iRi-oE-Mck" secondAttribute="width" multiplier="0.7" id="4lj-ke-XYF"/>
+                                                    <constraint firstItem="du4-sn-oGl" firstAttribute="trailing" secondItem="Ldg-Ef-rUl" secondAttribute="trailing" constant="20" id="4vo-j2-HqX"/>
+                                                    <constraint firstItem="du4-sn-oGl" firstAttribute="bottom" secondItem="Ldg-Ef-rUl" secondAttribute="top" constant="-35" id="BKu-z5-R4w"/>
                                                     <constraint firstItem="lhj-uu-Pc4" firstAttribute="centerX" secondItem="iRi-oE-Mck" secondAttribute="centerX" id="JtU-dL-Dr9"/>
+                                                    <constraint firstItem="du4-sn-oGl" firstAttribute="leading" secondItem="Ldg-Ef-rUl" secondAttribute="leading" constant="-20" id="NPk-hk-HW9"/>
                                                     <constraint firstItem="lhj-uu-Pc4" firstAttribute="height" secondItem="iRi-oE-Mck" secondAttribute="height" multiplier="0.152334" id="OYb-3Z-2xY"/>
                                                     <constraint firstAttribute="trailing" secondItem="du4-sn-oGl" secondAttribute="trailing" id="OkF-P4-hgN"/>
                                                     <constraint firstItem="du4-sn-oGl" firstAttribute="leading" secondItem="iRi-oE-Mck" secondAttribute="leading" id="QNN-JJ-xVS"/>
@@ -998,6 +1006,7 @@
                         <outlet property="scrollView" destination="hwT-kp-R0n" id="x3A-fm-6MX"/>
                         <outlet property="segment_colours" destination="lhj-uu-Pc4" id="pTd-5j-Fqe"/>
                         <outlet property="slider_fontSize" destination="ykO-pU-Ah8" id="ck0-g9-lNQ"/>
+                        <outlet property="slider_textborder" destination="Ldg-Ef-rUl" id="IEb-4C-CHC"/>
                         <outlet property="view_animationStyleContainer" destination="TMe-dT-KGF" id="SuL-Ke-GPY"/>
                         <outlet property="view_fontColourContainer" destination="iRi-oE-Mck" id="C1n-Kc-qLb"/>
                         <outlet property="view_fontContainer" destination="1Kq-Cx-HCS" id="C4h-lc-OWz"/>

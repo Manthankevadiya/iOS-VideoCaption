@@ -59,6 +59,10 @@ final class UILabelAnimator {
         didSet { if fontColor != oldValue { setupHostingController() } }
     }
     
+    var shadowcolor: UIColor = .white {
+        didSet { if shadowcolor != oldValue { setupHostingController() } }
+    }
+    
     // MARK: - Internal State
     private let driver = AnimationDriver()
     private var displayLink: CADisplayLink?
@@ -95,6 +99,7 @@ final class UILabelAnimator {
         // 2. Determine colors and font from the UILabel
         let fontColor = Color(fontColor)
         let highlight = Color(highlightColor)
+        let textshadowColor = Color(shadowcolor)
         
         // 3. Create the new SwiftUI view
         let animatedView = AnimatedTextView(
@@ -108,6 +113,7 @@ final class UILabelAnimator {
             highlightColor: highlight,
             borderWidth: borderWidth,
             borderColor: Color(uiColor: borderColor),
+            shadowColor: textshadowColor,
             driver: driver
         )
         

@@ -218,6 +218,7 @@ final class FrameByFrameExporter {
                 highlightColor: Color(config.highlightColor),
                 borderWidth: scaledBorderWidth,
                 borderColor: Color(config.borderColor),
+                shadowColor: Color(config.shadowColor),
                 driver: driver
             )
             
@@ -266,6 +267,7 @@ final class FrameByFrameExporter {
             highlightColor: .clear,
             borderWidth: 0,
             borderColor: .clear,
+            shadowColor: .clear,
             driver: driver
         ))
         host.view.backgroundColor = .clear

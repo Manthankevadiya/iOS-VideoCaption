@@ -45,6 +45,7 @@ struct AnimatedTextView: View {
     
     let borderWidth: CGFloat
     let borderColor: Color
+    let shadowColor: Color
     
     @ObservedObject var driver: AnimationDriver
     
