@@ -46,6 +46,8 @@ struct AnimatedTextView: View {
     let borderWidth: CGFloat
     let borderColor: Color
     let shadowColor: Color
+    let shadowRadius: CGFloat
+    let shadowOpacity: CGFloat
     
     @ObservedObject var driver: AnimationDriver
     
@@ -157,6 +159,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .scaleEffect(0.01 + 0.99 * p)
                     .opacity(p)
             }
@@ -173,6 +176,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .scaleEffect(2.0 - 1.0 * p)
                     .opacity(p)
             }
@@ -192,6 +196,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .opacity(p)
             }
         }
@@ -207,6 +212,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .offset(y: 20 - 20 * p)
                     .opacity(p)
             }
@@ -223,6 +229,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .offset(y: -20 + 20 * p)
                     .opacity(p)
             }
@@ -356,11 +363,13 @@ extension AnimatedTextView {
                 Text(text) // Full text
                     .font(currentFont)
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .foregroundColor(.clear)
                 
                 Text(cursorChar) // Cursor Placeholder
                     .font(currentFont)
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .foregroundColor(.clear) // Invisible
             }
             
@@ -371,12 +380,14 @@ extension AnimatedTextView {
                 Text(displayedText) // Typing text
                     .font(currentFont)
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                 // Important: Allow it to take up space naturally
                     .fixedSize(horizontal: true, vertical: false)
                 
                 Text(cursorChar) // Real Cursor
                     .font(currentFont)
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .opacity(showCursor ? 1 : 0)
             }
         }
@@ -406,6 +417,7 @@ extension AnimatedTextView {
                 Text(displayedText)
                     .font(currentFont)
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                 
                 // Cursor is its own view so we can fade it without reflowing text
                 Text("_")
@@ -432,6 +444,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .foregroundColor(currentColor)
             }
         }
@@ -447,6 +460,7 @@ extension AnimatedTextView {
                 
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .foregroundColor(currentHighlightColor)
             }
         }
@@ -549,6 +563,7 @@ extension AnimatedTextView {
             ForEach(words.indices, id: \.self) { i in
                 Text(words[i])
                     .textStroke(color: borderColor, width: borderWidth)
+                    .shadow(color: shadowColor, radius: shadowRadius)
                     .foregroundColor(wordColor)
                     .wordIndex(i)
             }

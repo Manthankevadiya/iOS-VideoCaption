@@ -63,6 +63,8 @@ final class UILabelAnimator {
         didSet { if shadowcolor != oldValue { setupHostingController() } }
     }
     
+    var shadowRadius: Double = 0.0
+    
     // MARK: - Internal State
     private let driver = AnimationDriver()
     private var displayLink: CADisplayLink?
@@ -114,6 +116,8 @@ final class UILabelAnimator {
             borderWidth: borderWidth,
             borderColor: Color(uiColor: borderColor),
             shadowColor: textshadowColor,
+            shadowRadius: shadowRadius,
+            shadowOpacity: 1.0,
             driver: driver
         )
         

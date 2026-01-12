@@ -14,8 +14,15 @@ class CaptionManager: NSObject {
     private let speechRecognizer: SFSpeechRecognizer?
     private var recognitionTask: SFSpeechRecognitionTask?
     
-    init(languageCode: String) {
+    init?(languageCode: String) {
         let locale = Locale(identifier: languageCode)
+        
+        // Check if this specific locale is supported
+        guard SFSpeechRecognizer.supportedLocales().contains(locale) else {
+            print("Locale \(languageCode) is not supported by Speech Framework")
+            return nil
+        }
+        
         speechRecognizer = SFSpeechRecognizer(locale: locale)
         super.init()
     }
@@ -29,14 +36,15 @@ class CaptionManager: NSObject {
     // Public Transcription Function
     func transcribeAudio(url audioURL: URL, completion: @escaping (Result<[TimedWord], Error>) -> Void) {
         
-        guard speechRecognizer?.isAvailable == true else {
+        // 1. Ensure the recognizer exists and is available
+        guard let recognizer = speechRecognizer, recognizer.isAvailable else {
             let error = NSError(domain: "CaptionManagerError", code: 1,
-                                userInfo: [NSLocalizedDescriptionKey: "Speech recognizer is not available on this device."])
+                                userInfo: [NSLocalizedDescriptionKey: "Speech recognizer is not available for the selected language or device."])
             completion(.failure(error))
             return
         }
         
-        // Setup Audio Session for Background Processing
+        // 2. Setup Audio Session
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.playback, mode: .default, options: .mixWithOthers)
@@ -49,13 +57,25 @@ class CaptionManager: NSObject {
         
         let request = SFSpeechURLRecognitionRequest(url: audioURL)
         request.shouldReportPartialResults = false
-        request.requiresOnDeviceRecognition = true
         request.taskHint = .dictation
-        if #available(iOS 16, *) { request.addsPunctuation = true }
         
-        print("Starting transcription of file: \(audioURL.lastPathComponent)")
+        // --- THE FIX ---
+        // Check if on-device recognition is actually supported for THIS specific language.
+        // If it's not downloaded or supported, we set this to 'false' so it can use Apple's servers.
+        if recognizer.supportsOnDeviceRecognition {
+            request.requiresOnDeviceRecognition = true
+        } else {
+            print("⚠️ On-device assets not found for \(recognizer.locale.identifier). Using server-based recognition.")
+            request.requiresOnDeviceRecognition = false
+        }
         
-        recognitionTask = speechRecognizer?.recognitionTask(with: request) { [weak self] (result, error) in
+        if #available(iOS 16, *) {
+            request.addsPunctuation = true
+        }
+        
+        print("Starting transcription [Locale: \(recognizer.locale.identifier)]")
+        
+        recognitionTask = recognizer.recognitionTask(with: request) { [weak self] (result, error) in
             
             defer {
                 if result?.isFinal == true || error != nil {
@@ -64,73 +84,56 @@ class CaptionManager: NSObject {
                 }
             }
             
-            guard self != nil else { return }
+            guard let self = self else { return }
             
             if let error = error {
-                // Ignore "Cancellation" error (code 203) as it's user-initiated
                 let nsError = error as NSError
+                // Error 203 is user cancellation, Error 1101/1110 usually relate to asset/internet issues
                 if nsError.code == 203 {
                     print("Transcription cancelled.")
                 } else {
-                    print("Transcription error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
                 return
             }
             
-            guard let result = result, result.isFinal else {
-                return // Wait for final result
-            }
-            
-            print("Final Transcription received. Processing...")
+            guard let result = result, result.isFinal else { return }
             
             // --- DATA EXTRACTION ---
             let segments = result.bestTranscription.segments
             var rawWordList: [TimedWord] = []
             
             for segment in segments {
-                // A. Handle potential multi-word segments (rare in 'dictation' mode but possible)
+                // Handle multi-word segments
                 if segment.substring.contains(" ") {
                     let segmentWords = segment.substring.split(separator: " ")
-                    let totalDuration = segment.duration
-                    let wordsCount = Double(segmentWords.count)
-                    let estimatedWordDuration = totalDuration / max(wordsCount, 1.0)
-                    
+                    let estimatedWordDuration = segment.duration / max(Double(segmentWords.count), 1.0)
                     var currentTime = segment.timestamp
                     
                     for word in segmentWords {
-                        let timedWord = TimedWord(
+                        rawWordList.append(TimedWord(
                             word: String(word),
                             startTime: currentTime,
                             duration: estimatedWordDuration
-                        )
-                        rawWordList.append(timedWord)
+                        ))
                         currentTime += estimatedWordDuration
                     }
-                    
                 } else {
-                    // B. Single word segment
-                    let timedWord = TimedWord(
+                    rawWordList.append(TimedWord(
                         word: segment.substring,
                         startTime: segment.timestamp,
                         duration: segment.duration
-                    )
-                    rawWordList.append(timedWord)
+                    ))
                 }
             }
             
+            // --- SMOOTHING ---
             var smoothedList: [TimedWord] = []
-            
             for i in 0..<rawWordList.count {
                 var currentWord = rawWordList[i]
-                
                 if i < rawWordList.count - 1 {
                     let nextWord = rawWordList[i + 1]
-                    let endTime = currentWord.startTime + currentWord.duration
-                    let gap = nextWord.startTime - endTime
-                    
-                    // If gap is positive (silence) but small (< 0.4s), extend word to fill it.
-                    // This prevents the caption from disappearing for a split second between words.
+                    let gap = nextWord.startTime - (currentWord.startTime + currentWord.duration)
                     if gap > 0 && gap < 0.4 {
                         currentWord.duration += gap
                     }
@@ -139,9 +142,6 @@ class CaptionManager: NSObject {
             }
             
             completion(.success(smoothedList))
-            
-            // Cleanup the audio file
-            print("Transcription complete. Audio file cleaned up.")
         }
     }
     

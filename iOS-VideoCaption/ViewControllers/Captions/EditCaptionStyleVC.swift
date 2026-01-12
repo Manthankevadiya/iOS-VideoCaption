@@ -60,6 +60,7 @@ class EditCaptionStyleVC: UIViewController {
     var selectedHighlightColour = String()
     var selectedBorderColour = String()
     var selectedShadowColour = String()
+    var selectedShadhowRadius = CGFloat()
     var selectedBorderSize = CGFloat()
     
     var fontNames: [String] = {
@@ -101,6 +102,8 @@ class EditCaptionStyleVC: UIViewController {
     }
     
     func setUpData() {
+        self.slider_textborder.addTarget(self,action: #selector(borderShadowSliderChanged(_:)),for: .valueChanged)
+        
         self.selectedFontSize = CGFloat(self.project.captionFontSize)
         self.selectedBorderSize = CGFloat(self.project.borderThickness)
         self.selectedFont = UIFont(name: self.project.captionFontName ?? "", size: self.selectedFontSize)
@@ -109,6 +112,7 @@ class EditCaptionStyleVC: UIViewController {
         self.selectedHighlightColour = self.project.captionHighlightColor ?? ""
         self.selectedBorderColour = self.project.borderColor ?? ""
         self.selectedShadowColour = self.project.shadowColor ?? ""
+        self.selectedShadhowRadius = CGFloat(self.project.shadowRadius)
         
         self.lbl_caption.font = self.selectedFont?.withSize(self.selectedFontSize)
         self.lbl_caption.layer.borderWidth = self.selectedBorderSize
@@ -220,6 +224,7 @@ class EditCaptionStyleVC: UIViewController {
                 borderWidth: selectedBorderSize,
                 borderColor: UIColor(hex: self.selectedBorderColour),
                 shadowColor: UIColor(hex: self.selectedShadowColour),
+                shadowRadius: self.selectedShadhowRadius,
                 fontName: fontName,
                 fontColor: fontColor
             )
@@ -232,6 +237,8 @@ class EditCaptionStyleVC: UIViewController {
                 fontSize: self.selectedFontSize,
                 borderWidth: selectedBorderSize,
                 borderColor: UIColor(hex: self.selectedBorderColour),
+                shadowColor: UIColor(hex: self.selectedShadowColour),
+                shadowRadius: self.selectedShadhowRadius,
                 fontName: fontName,
                 fontColor: fontColor
             )
@@ -290,10 +297,20 @@ class EditCaptionStyleVC: UIViewController {
     }
     
     func setUpBorderSlider() {
-        self.slider_textborder.minimumValue = 0
-        self.slider_textborder.maximumValue = 2
-        self.slider_textborder.value = Float(self.selectedBorderSize)
-        self.slider_textborder.addTarget(self, action: #selector(self.fontBorderSliderChanged(_:)), for: .valueChanged)
+        switch segment_colours.selectedSegmentIndex {
+        case 2: // Border
+            slider_textborder.minimumValue = 0
+            slider_textborder.maximumValue = 2
+            slider_textborder.value = Float(selectedBorderSize)
+            
+        case 3: // Shadow
+            slider_textborder.minimumValue = 0
+            slider_textborder.maximumValue = 5
+            slider_textborder.value = Float(selectedShadhowRadius)
+            
+        default:
+            break
+        }
     }
     
     @objc func fontSizeSliderChanged(_ sender: UISlider) {
@@ -303,9 +320,19 @@ class EditCaptionStyleVC: UIViewController {
         self.setSelctedCaptionContainer()
     }
     
-    @objc func fontBorderSliderChanged(_ sender: UISlider) {
-        self.selectedBorderSize = CGFloat(sender.value)
-        self.lbl_caption.font = self.selectedFont?.withSize(self.selectedBorderSize)
+    @objc func borderShadowSliderChanged(_ sender: UISlider) {
+        
+        switch segment_colours.selectedSegmentIndex {
+            
+        case 2: // Border
+            selectedBorderSize = CGFloat(sender.value)
+            
+        case 3: // Shadow
+            selectedShadhowRadius = CGFloat(sender.value)
+            
+        default:
+            return
+        }
         
         self.setSelctedCaptionContainer()
     }
@@ -338,11 +365,12 @@ class EditCaptionStyleVC: UIViewController {
             self.slider_textborder.isHidden = false
         case 3:
             self.selectedColourType = .shadowColor
-            self.slider_textborder.isHidden = true
+            self.slider_textborder.isHidden = false
         default:
             break
         }
         self.cv_colours.reloadData()
+        self.setUpBorderSlider()
         self.scrollToSelectedColour()
     }
     
@@ -351,7 +379,7 @@ class EditCaptionStyleVC: UIViewController {
     }
     
     @IBAction func clickOnDone(_ sender: Any) {
-        CoreDataManager.shared.updateCaptionStyle(project: self.project, fontName: self.selectedFont?.fontName ?? "", fontSize: Float(self.selectedFontSize), fontColor: self.selectedFontColour, fontHighlightColor: self.selectedHighlightColour, animationType: captionAnimationStyles[self.selectedAnimationIndex].rawValue, borderColor: self.selectedBorderColour, borderThick: Float(self.selectedBorderSize))
+        CoreDataManager.shared.updateCaptionStyle(project: self.project, fontName: self.selectedFont?.fontName ?? "", fontSize: Float(self.selectedFontSize), fontColor: self.selectedFontColour, fontHighlightColor: self.selectedHighlightColour, animationType: captionAnimationStyles[self.selectedAnimationIndex].rawValue, borderColor: self.selectedBorderColour, borderThick: Float(self.selectedBorderSize), shadowradius: Float(selectedShadhowRadius), shadowColor: self.selectedShadowColour)
         self.clickedOnDone?()
         self.dismiss(animated: true)
     }

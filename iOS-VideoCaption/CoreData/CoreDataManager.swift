@@ -89,7 +89,7 @@ extension CoreDataManager {
         newProject.wordsPerLine = 4
         
         // --- Default Font Style ---
-        newProject.shadowRadius = 4.0
+        newProject.shadowRadius = 0
         newProject.shadowColor = "#000000"      // Black shadow
         newProject.borderThickness = 0.0
         newProject.borderColor = "#FFFFFF"      // White border
@@ -177,7 +177,7 @@ extension CoreDataManager {
         saveContext()
     }
     
-    func updateCaptionStyle(project: CaptionEntity, fontName: String,fontSize: Float, fontColor: String, fontHighlightColor: String, animationType: String, borderColor: String, borderThick: Float) {
+    func updateCaptionStyle(project: CaptionEntity, fontName: String,fontSize: Float, fontColor: String, fontHighlightColor: String, animationType: String, borderColor: String, borderThick: Float, shadowradius: Float, shadowColor: String) {
         project.captionFontName = fontName
         project.captionFontSize = fontSize
         project.captionFontColor = fontColor
@@ -185,6 +185,8 @@ extension CoreDataManager {
         project.captionAnimationType = animationType
         project.borderColor = borderColor
         project.borderThickness = borderThick
+        project.shadowColor = shadowColor
+        project.shadowRadius = shadowradius
         
         project.dateLastEdited = Date()
         saveContext()

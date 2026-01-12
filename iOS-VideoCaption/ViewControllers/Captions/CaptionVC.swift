@@ -174,6 +174,7 @@ class CaptionVC: UIViewController {
         let borderColor = UIColor(hex: self.project.borderColor ?? "000000")
         let borderWidth = CGFloat(self.project.borderThickness)
         let shadowColor = UIColor(hex: self.project.shadowColor ?? "000000")
+        let shadowradius = CGFloat(self.project.shadowRadius)
         
         let config = ExportConfiguration(
             videoURL: videoURL,
@@ -187,6 +188,8 @@ class CaptionVC: UIViewController {
             borderColor: borderColor,
             borderWidth: borderWidth,
             shadowColor: shadowColor,
+            shadowRadius: shadowradius,
+            shadowOpacity: 1,
             defaultWordDuration: 0.3,
             
             // Use the videoRect.size as the reference canvas,

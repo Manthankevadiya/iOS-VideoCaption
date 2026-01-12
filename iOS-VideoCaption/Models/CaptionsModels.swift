@@ -23,6 +23,8 @@ struct ExportConfiguration {
     let borderColor: UIColor
     let borderWidth: CGFloat
     let shadowColor: UIColor
+    let shadowRadius: CGFloat
+    let shadowOpacity: CGFloat
     
     // Timing helper (used only when precise timings are not available)
     let defaultWordDuration: Double

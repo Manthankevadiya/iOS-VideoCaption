@@ -126,7 +126,8 @@ extension UILabel {
         fontSize: CGFloat? = nil,
         borderWidth: CGFloat = 0.0,
         borderColor: UIColor = .clear,
-        shadowColor: UIColor? = nil,
+        shadowColor: UIColor? = .clear,
+        shadowRadius: CGFloat = 0.0,
         fontName: String = "",
         fontColor: UIColor? = nil
     ) {
@@ -148,6 +149,7 @@ extension UILabel {
         animator.style = style
         animator.isDemo = isDemo
         animator.wordDuration = wordDuration
+        animator.shadowRadius = shadowRadius
         
         if let fs = fontSize { animator.fontSize = fs }
         animator.borderWidth = borderWidth

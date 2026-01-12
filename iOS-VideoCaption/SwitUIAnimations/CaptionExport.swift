@@ -219,6 +219,8 @@ final class FrameByFrameExporter {
                 borderWidth: scaledBorderWidth,
                 borderColor: Color(config.borderColor),
                 shadowColor: Color(config.shadowColor),
+                shadowRadius: config.shadowRadius,
+                shadowOpacity: 1.0,
                 driver: driver
             )
             
@@ -268,6 +270,8 @@ final class FrameByFrameExporter {
             borderWidth: 0,
             borderColor: .clear,
             shadowColor: .clear,
+            shadowRadius: 0,
+            shadowOpacity: 0,
             driver: driver
         ))
         host.view.backgroundColor = .clear
