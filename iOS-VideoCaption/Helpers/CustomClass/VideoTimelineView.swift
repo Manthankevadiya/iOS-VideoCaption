@@ -13,7 +13,7 @@ protocol VideoTimelineViewDelegate: AnyObject {
     func videoTimelineView(_ timelineView: VideoTimelineView, didScrubTo time: CMTime)
     func videoTimelineViewDidEndScrubbing(_ timelineView: VideoTimelineView)
     func timelineDidToggleMute(isMuted: Bool)
-    func videoTimelineDidRenameWord(at index: Int, newText: String, objectID: NSManagedObjectID?)
+    func videoTimelineDidRequestRenameWord(at index: Int,currentText: String,objectID: NSManagedObjectID?)
 }
 
 class VideoTimelineView: UIView {
@@ -165,7 +165,7 @@ class VideoTimelineView: UIView {
         guard index < wordSegments.count else { return }
         
         wordSegments[index].text = newText
-        delegate?.videoTimelineDidRenameWord(at: index, newText: newText, objectID: wordSegments[index].objectID)
+        delegate?.videoTimelineDidRequestRenameWord(at: index, currentText: newText, objectID: wordSegments[index].objectID)
         wordCollectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
     }
     
@@ -626,55 +626,63 @@ extension VideoTimelineView: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        // --- Word Collection View Tap Logic ---
         if collectionView == wordCollectionView {
+            let segment = wordSegments[indexPath.item]
+            
+            // 🔹 FIX: If already selected, trigger the RENAME POPUP via delegate
+            // This prevents the cell's internal keyboard from opening.
             if selectedWordIndex == indexPath.item {
-                (wordCollectionView.cellForItem(at: indexPath) as? WordCvCell)?.beginRename()
+                delegate?.videoTimelineDidRequestRenameWord(
+                    at: indexPath.item,
+                    currentText: segment.text,
+                    objectID: segment.objectID
+                )
                 return
             }
+            
+            // If not selected, select it and scrub the video to that word's start time
             selectedWordIndex = indexPath.item
             wordCollectionView.reloadData()
             
-            let segment = wordSegments[indexPath.item]
             let time = CMTime(seconds: segment.start, preferredTimescale: 600)
             updatePlayhead(to: time)
             delegate?.videoTimelineView(self, didScrubTo: time)
             return
         }
         
-        // ⭐ FATAL ERROR FIX: Safely check if the index is valid before accessing the array.
-        guard indexPath.item < thumbnailTimes.count else {
-            print("❌ ERROR: Thumbnail time array is not yet fully populated or has invalid count.")
-            return // Exit gracefully, ignoring the tap.
-        }
+        // --- Thumbnail Collection View Tap Logic ---
+        guard indexPath.item < thumbnailTimes.count else { return }
         
-        // Now it's safe to access the array
         let time = thumbnailTimes[indexPath.item]
-        
-        // --- Scroll Positioning Logic ---
         let playheadOffset = bounds.width / 2
-        let horizontalPadding = playheadOffset
-        
-        // Assuming widthForItems(upTo:) is correct and uses the actual thumbnail sizes:
         let cumulativeThumbnailWidthBefore = widthForItems(upTo: indexPath.item)
-        
         let targetContentX = cumulativeThumbnailWidthBefore + volumeButtonWidth
-        let newContentOffsetX = targetContentX - horizontalPadding
-        
-        // Apply final scroll offset (clamped to minContentOffsetX)
+        let newContentOffsetX = targetContentX - playheadOffset
         let finalContentOffsetX = max(newContentOffsetX, minContentOffsetX)
-        
-        // Clamping to maxContentOffsetX is usually not required here but is a good practice if you trust the calculation
-        // let finalContentOffsetX = min(finalContentOffsetX, maxContentOffsetX)
         
         collectionView.setContentOffset(CGPoint(x: finalContentOffsetX, y: 0), animated: true)
         
-        // --- Time Update Logic ---
         let snappedSeconds = floor(time.seconds / majorMarkerInterval) * majorMarkerInterval
         let snappedTime = CMTime(seconds: snappedSeconds, preferredTimescale: time.timescale)
         
         self.updateTimeLabel(to: snappedTime)
-        
         delegate?.videoTimelineView(self, didScrubTo: time)
+    }
+}
+
+extension VideoTimelineView {
+    
+    // Call this from the ViewController AFTER the user saves the rename
+    func updateWordSegmentText(at index: Int, newText: String) {
+        guard index < wordSegments.count else { return }
+        
+        // 1. Update local data so the UI change is instantaneous
+        wordSegments[index].text = newText
+        
+        // 2. Refresh just that cell
+        let indexPath = IndexPath(item: index, section: 0)
+        wordCollectionView.reloadItems(at: [indexPath])
     }
 }
 

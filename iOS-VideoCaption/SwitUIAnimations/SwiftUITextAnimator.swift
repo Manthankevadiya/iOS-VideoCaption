@@ -189,7 +189,9 @@ final class UILabelAnimator {
         durations: [Double]?,
         fontSize: CGFloat,
         borderWidth: CGFloat,
-        borderColor: UIColor
+        borderColor: UIColor,
+        shadowColor: UIColor,
+        shadowRadius: CGFloat
     ) {
         let fontChanged = (self.fontName != fontName) || (self.text != text) || (fontColor != fontColor)
         let styleChanged = self.style != style
@@ -207,6 +209,8 @@ final class UILabelAnimator {
         self.fontSize = fontSize
         self.borderWidth = borderWidth
         self.borderColor = borderColor
+        self.shadowcolor = shadowColor
+        self.shadowRadius = shadowRadius
         
         if let hColor = highlightColor {
             self.highlightColor = hColor

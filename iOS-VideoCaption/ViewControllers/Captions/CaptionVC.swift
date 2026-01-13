@@ -501,6 +501,15 @@ extension CaptionVC {
 }
 
 extension CaptionVC: VideoTimelineViewDelegate {
+    
+    func videoTimelineDidRequestRenameWord(at index: Int, currentText: String, objectID: NSManagedObjectID?) {
+        presentRenameWordPopup(
+            index: index,
+            currentText: currentText,
+            objectID: objectID
+        )
+    }
+    
     func videoTimelineView(_ timelineView: VideoTimelineView, didScrubTo time: CMTime) {
         if self.player?.rate != 0 && self.player?.error == nil {
             self.player?.pause()
@@ -524,35 +533,61 @@ extension CaptionVC: VideoTimelineViewDelegate {
     
     func videoTimelineDidRenameWord(at index: Int, newText: String, objectID: NSManagedObjectID?) {
         guard let objectID = objectID else { return }
-        
         let context = self.coreDataManager.persistentContainer.viewContext
         
         context.perform {
             do {
-                // A. Fetch the specific entity
                 if let entity = try context.existingObject(with: objectID) as? TranscribedEntity {
-                    
-                    // B. Update Data
                     entity.text = newText
                     self.coreDataManager.saveContext()
                     
-                    print("✅ CaptionVC: Renamed word at index \(index) to '\(newText)'")
-                    
-                    // C. Refresh the on-screen CaptionFormatter
-                    // This ensures the main video caption updates its text immediately
                     DispatchQueue.main.async {
+                        // A. Update the timeline UI immediately (Fixes the visual delay)
+                        self.videoTimelineView.updateWordSegmentText(at: index, newText: newText)
+                        
+                        // B. Refresh the video overlay/captions
                         self.loadCaptionDataAndFormat()
                         
-                        // Force a redraw of the current frame
+                        // C. Force redraw
                         if let currentTime = self.player?.currentTime().seconds {
                             self.handleTimeUpdate(currentTime: currentTime)
                         }
+                        
+                        print("✅ Successfully renamed and updated UI")
                     }
                 }
             } catch {
-                print("❌ CaptionVC Error: Could not rename word. \(error)")
+                print("❌ Error renaming word: \(error)")
             }
         }
+    }
+    
+    private func presentRenameWordPopup(index: Int, currentText: String, objectID: NSManagedObjectID?) {
+        let alert = UIAlertController(
+            title: "Rename Word",
+            message: nil,
+            preferredStyle: .alert
+        )
+        
+        alert.addTextField { textField in
+            textField.text = currentText
+            textField.clearButtonMode = .whileEditing
+            textField.autocapitalizationType = .none
+        }
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
+            guard let self = self,
+                  let newText = alert?.textFields?.first?.text,
+                  !newText.isEmpty else { return }
+            
+            // Perform the rename
+            self.videoTimelineDidRenameWord(at: index, newText: newText, objectID: objectID)
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(saveAction)
+        
+        present(alert, animated: true)
     }
 }
 
@@ -872,6 +907,8 @@ extension CaptionVC {
         let fontSize: CGFloat = resolveCurrentFontSize()
         let borderColor: UIColor? = resolveCurrentBorderColor()
         let borderWidth: CGFloat = resolveCurrentBorderWidth()
+        let shadowColor: UIColor? = resolveCurrentShadowColor()
+        let shadowRadius: CGFloat = resolveCurrentShadowRadius()
         
         let wordCount = Double(activeLine.words.count)
         let lineDuration = activeLine.endTime - activeLine.startTime
@@ -901,7 +938,9 @@ extension CaptionVC {
             durations: specificDurations,
             fontSize: fontSize,
             borderWidth: borderWidth,
-            borderColor: borderColor ?? .clear
+            borderColor: borderColor ?? .clear,
+            shadowColor: shadowColor ?? .clear,
+            shadowRadius: shadowRadius
         )
     }
     
@@ -941,11 +980,17 @@ extension CaptionVC {
         return CGFloat(thickness)
     }
     
+    private func resolveCurrentShadowColor() -> UIColor? {
+        guard let hex = self.project.shadowColor else { return nil }
+        return UIColor(hex: hex)
+    }
+    
+    private func resolveCurrentShadowRadius() -> CGFloat {
+        let thickness = self.project.shadowRadius
+        return CGFloat(thickness)
+    }
+    
 }
-
-
-
-
 
 class CaptionSelectionOverlay: UIView {
     private let borderLayer = CAShapeLayer()

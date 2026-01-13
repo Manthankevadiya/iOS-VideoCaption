@@ -51,7 +51,9 @@ extension UILabel {
         durations: [Double]?,
         fontSize: CGFloat? = nil,
         borderWidth: CGFloat = 0.0,
-        borderColor: UIColor = .clear
+        borderColor: UIColor = .clear,
+        shadowColor: UIColor = .clear,
+        shadowRadius: CGFloat = 0.0
     ) {
         // --- 1. Ensure/Create Animator ---
         if animator == nil {
@@ -100,7 +102,9 @@ extension UILabel {
             durations: durations,
             fontSize: fontSize ?? animator.fontSize,
             borderWidth: borderWidth,
-            borderColor: borderColor
+            borderColor: borderColor,
+            shadowColor: shadowColor,
+            shadowRadius: shadowRadius
         )
     }
 }
@@ -149,7 +153,6 @@ extension UILabel {
         animator.style = style
         animator.isDemo = isDemo
         animator.wordDuration = wordDuration
-        animator.shadowRadius = shadowRadius
         
         if let fs = fontSize { animator.fontSize = fs }
         animator.borderWidth = borderWidth
@@ -161,6 +164,7 @@ extension UILabel {
         
         if let sColor = shadowColor {
             animator.shadowcolor = sColor
+            animator.shadowRadius = shadowRadius
         }
         
         if let fColor = fontColor {
