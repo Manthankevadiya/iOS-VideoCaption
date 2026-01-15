@@ -75,6 +75,7 @@ class CaptionVC: UIViewController {
         }
     }
     private var captionSelectionHideTimer: Timer?
+    private var wordRenamePanel: WordRenamePanelView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -563,31 +564,49 @@ extension CaptionVC: VideoTimelineViewDelegate {
     }
     
     private func presentRenameWordPopup(index: Int, currentText: String, objectID: NSManagedObjectID?) {
-        let alert = UIAlertController(
-            title: "Rename Word",
-            message: nil,
-            preferredStyle: .alert
+        // Pause video if playing
+        if self.player?.rate != 0 {
+            self.player?.pause()
+            self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        }
+        
+        // Create panel if needed
+        if wordRenamePanel == nil {
+            wordRenamePanel = WordRenamePanelView()
+            wordRenamePanel?.delegate = self
+        }
+        
+        // Get all word segments from timeline
+        let segments = self.coreDataManager.fetchTranscription(for: self.project).map { entity in
+            WordSegment(
+                objectID: entity.objectID,
+                text: entity.text ?? "",
+                start: entity.startTime,
+                duration: entity.endTime - entity.startTime
+            )
+        }
+        
+        // Show panel
+        wordRenamePanel?.show(
+            in: self.view,
+            segments: segments,
+            selectedIndex: index,
+            objectID: objectID
         )
-        
-        alert.addTextField { textField in
-            textField.text = currentText
-            textField.clearButtonMode = .whileEditing
-            textField.autocapitalizationType = .none
-        }
-        
-        let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self, weak alert] _ in
-            guard let self = self,
-                  let newText = alert?.textFields?.first?.text,
-                  !newText.isEmpty else { return }
-            
-            // Perform the rename
-            self.videoTimelineDidRenameWord(at: index, newText: newText, objectID: objectID)
-        }
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(saveAction)
-        
-        present(alert, animated: true)
+    }
+    
+}
+
+// Add this extension at the bottom of CaptionVC.swift
+extension CaptionVC: WordRenamePanelDelegate {
+    func wordRenamePanelDidSave(_ panel: WordRenamePanelView, newText: String, index: Int, objectID: NSManagedObjectID?) {
+        // Perform the rename
+        self.videoTimelineDidRenameWord(at: index, newText: newText, objectID: objectID)
+    }
+    
+    func wordRenamePanelDidCancel(_ panel: WordRenamePanelView) {
+        // Optional: Resume playback or any other action
+        print("User cancelled word rename")
     }
 }
 
