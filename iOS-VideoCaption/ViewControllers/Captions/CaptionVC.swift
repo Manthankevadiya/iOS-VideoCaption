@@ -783,66 +783,84 @@ extension CaptionVC {
     }
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-            let captionView = gesture.view!
-            guard let boundsView = self.view_videoContainer,
-                  let centerXConstraint = self.captionCenterXConstraint,
-                  let centerYConstraint = self.captionCenterYConstraint,
-                  let guides = self.guideManager else { return }
-            
-            captionView.layoutIfNeeded()
-            let translation = gesture.translation(in: boundsView)
-            let videoRect = self.calculateVideoRect(in: boundsView)
-            
-            let playerViewCenterX = boundsView.bounds.midX
-            let startCenterX = playerViewCenterX + centerXConstraint.constant
-            
-            var proposedX = startCenterX + translation.x
-            var proposedY = centerYConstraint.constant + translation.y
-            
-            // Clamping logic...
-            let halfW = captionView.bounds.width / 2.0
-            let halfH = captionView.bounds.height / 2.0
-            let minX = videoRect.minX + halfW
-            let maxX = videoRect.maxX - halfW
-            let minY = videoRect.minY + halfH
-            let maxY = videoRect.maxY - halfH
-            
-            if minX < maxX {
-                proposedX = max(minX, min(maxX, proposedX))
-            } else {
-                proposedX = videoRect.midX
-            }
-            proposedY = max(minY, min(maxY, proposedY))
-            
-            switch gesture.state {
-            case .began:
-                // 1. Show the box immediately and stop any pending hide timer
-                self.isCaptionSelected = true
-                self.captionSelectionHideTimer?.invalidate()
-                guides.beginDrag(videoRect: videoRect)
-                
-            case .changed:
-                let snapped = guides.updateDrag(currentCenter: CGPoint(x: proposedX, y: proposedY),
-                                               videoRect: videoRect)
-                
-                centerXConstraint.constant = snapped.x - playerViewCenterX
-                centerYConstraint.constant = snapped.y
-                gesture.setTranslation(.zero, in: boundsView)
-                
-            case .ended, .cancelled:
-                guides.endDrag()
-                
-                // 2. Save position
-                let finalX = playerViewCenterX + centerXConstraint.constant
-                let finalY = centerYConstraint.constant
-                self.saveCurrentCaptionPosition(centerX: finalX, centerY: finalY, in: boundsView)
-                
-                // 3. START THE TIMER when user stops moving
-                self.startCaptionHideTimer()
-                
-            default: break
-            }
+
+        guard let captionView = gesture.view,
+              let boundsView = self.view_videoContainer,
+              let centerXConstraint = self.captionCenterXConstraint,
+              let centerYConstraint = self.captionCenterYConstraint,
+              let guides = self.guideManager else { return }
+
+        captionView.layoutIfNeeded()
+
+        let translation = gesture.translation(in: boundsView)
+        let videoRect = self.calculateVideoRect(in: boundsView)
+
+        // Player view center reference
+        let playerViewCenterX = boundsView.bounds.midX
+
+        // Current absolute center values
+        let startCenterX = playerViewCenterX + centerXConstraint.constant
+        let startCenterY = centerYConstraint.constant
+
+        // Proposed new center
+        var proposedX = startCenterX + translation.x
+        var proposedY = startCenterY + translation.y
+
+        // ---- CLAMPING TO VIDEO RECT ----
+        let halfWidth = captionView.bounds.width / 2
+        let halfHeight = captionView.bounds.height / 2
+
+        let minX = videoRect.minX + halfWidth
+        let maxX = videoRect.maxX - halfWidth
+        let minY = videoRect.minY + halfHeight
+        let maxY = videoRect.maxY - halfHeight
+
+        if minX < maxX {
+            proposedX = max(minX, min(maxX, proposedX))
+        } else {
+            proposedX = videoRect.midX
         }
+
+        proposedY = max(minY, min(maxY, proposedY))
+
+        switch gesture.state {
+
+        case .began:
+            self.isCaptionSelected = true
+            self.captionSelectionHideTimer?.invalidate()
+            guides.beginDrag(videoRect: videoRect)
+
+        case .changed:
+            let snappedCenter = guides.updateDrag(
+                currentCenter: CGPoint(x: proposedX, y: proposedY),
+                videoRect: videoRect,
+                captionSize: captionView.bounds.size
+            )
+
+            // Convert absolute center back to constraints
+            centerXConstraint.constant = snappedCenter.x - playerViewCenterX
+            centerYConstraint.constant = snappedCenter.y
+
+            gesture.setTranslation(.zero, in: boundsView)
+
+        case .ended, .cancelled:
+            guides.endDrag()
+
+            let finalCenterX = playerViewCenterX + centerXConstraint.constant
+            let finalCenterY = centerYConstraint.constant
+
+            self.saveCurrentCaptionPosition(
+                centerX: finalCenterX,
+                centerY: finalCenterY,
+                in: boundsView
+            )
+
+            self.startCaptionHideTimer()
+
+        default:
+            break
+        }
+    }
     
     func saveCurrentCaptionPosition(centerX: CGFloat, centerY: CGFloat, in playerView: UIView) {
         let videoRect = self.calculateVideoRect(in: playerView)
