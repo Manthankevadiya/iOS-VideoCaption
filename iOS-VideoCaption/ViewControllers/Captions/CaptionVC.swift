@@ -9,11 +9,14 @@ import UIKit
 import AVFoundation
 import Hero
 import CoreData
+import Foundation
 
 class CaptionVC: UIViewController {
     
     @IBOutlet weak var view_videoContainer: UIView!
     @IBOutlet weak var view_videoTimelineContainer: UIView!
+    @IBOutlet weak var btn_undo: UIButton!
+    @IBOutlet weak var btn_redo: UIButton!
     
     lazy var playPauseButton: UIButton = {
         let button = UIButton(type: .system)
@@ -77,9 +80,12 @@ class CaptionVC: UIViewController {
     private var captionSelectionHideTimer: Timer?
     private var wordRenamePanel: WordRenamePanelView?
     
+    private let captionUndoManager = UndoManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpVideoPlayer()
+        self.updateUndoRedoButtons()
     }
     
     override func viewDidLayoutSubviews() {
@@ -217,6 +223,18 @@ class CaptionVC: UIViewController {
         self.navigationController?.popToRootViewController(animated: true)
     }
     
+    @IBAction func clickOnUndo(_ sender: UIButton) {
+        guard captionUndoManager.canUndo else { return }
+            captionUndoManager.undo()
+            updateUndoRedoButtons()
+    }
+    
+    @IBAction func clickOnRedo(_ sender: UIButton) {
+        guard captionUndoManager.canRedo else { return }
+            captionUndoManager.redo()
+            updateUndoRedoButtons()
+    }
+    
     @IBAction func clickOnStyle(_ sender: Any) {
         let vc = EditCaptionStyleVC.instantiate()
         vc.modalPresentationStyle = .overCurrentContext
@@ -238,7 +256,7 @@ class CaptionVC: UIViewController {
     }
     
     @IBAction func clickOnEdit(_ sender: Any) {
-       //
+        self.presentResetConfirmation()
     }
     
 }
@@ -390,6 +408,123 @@ extension CaptionVC {
             self?.hideControls()
         }
     }
+    
+    // For Undo or redo
+    private func refreshUIAfterUndoRedo() {
+        self.loadCaptionDataAndFormat()
+
+        if let currentTime = self.player?.currentTime().seconds {
+            self.handleTimeUpdate(currentTime: currentTime)
+        }
+
+        self.loadAndConfigureWordSegments()
+    }
+
+    func restoreCaptionPosition(x: CGFloat, y: CGFloat) {
+
+        // 1. Capture CURRENT state (this becomes REDO)
+        let currentX = CGFloat(self.project.captionPositionX)
+        let currentY = CGFloat(self.project.captionPositionY)
+
+        // 2. REGISTER REDO
+        captionUndoManager.registerUndo(withTarget: self) { target in
+            target.restoreCaptionPosition(x: currentX, y: currentY)
+        }
+
+        captionUndoManager.setActionName("Move Caption")
+
+        // 3. APPLY UNDO STATE
+        self.project.captionPositionX = Float(x)
+        self.project.captionPositionY = Float(y)
+        self.coreDataManager.saveContext()
+
+        // 4. UPDATE UI
+        self.applyCaptionPositionFromProject()
+
+        if let currentTime = self.player?.currentTime().seconds {
+            self.handleTimeUpdate(currentTime: currentTime)
+        }
+
+        self.updateUndoRedoButtons()
+    }
+    
+    private func updateUndoRedoButtons() {
+        btn_undo.isEnabled = captionUndoManager.canUndo
+        btn_redo.isEnabled = captionUndoManager.canRedo
+
+        btn_undo.alpha = captionUndoManager.canUndo ? 1.0 : 0.4
+        btn_redo.alpha = captionUndoManager.canRedo ? 1.0 : 0.4
+    }
+    
+    // For reset Video
+    private func presentResetConfirmation() {
+        let alert = UIAlertController(
+            title: "Reset Video",
+            message: "This will reset the video to its original state. All edits will be lost and cannot be undone.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        alert.addAction(UIAlertAction(title: "Reset", style: .destructive) { _ in
+            self.resetVideoToInitialState()
+        })
+
+        present(alert, animated: true)
+    }
+    
+    private func resetVideoToInitialState() {
+
+        // 1. Stop playback
+        player?.pause()
+        player = nil
+
+        // 2. Remove player layer
+        playerLayer?.removeFromSuperlayer()
+        playerLayer = nil
+
+        // 3. Remove observers & timers
+        removePlaybackObservers()
+        captionSelectionHideTimer?.invalidate()
+        captionSelectionHideTimer = nil
+
+        // 4. Clear caption UI
+        view_animatedCaptionContainer.subviews.forEach { $0.removeFromSuperview() }
+
+        // 5. Reset Core Data project state
+        resetProjectToInitialState()
+
+        // 6. CLEAR UNDO / REDO COMPLETELY
+        captionUndoManager.removeAllActions()
+        updateUndoRedoButtons()
+
+        // 7. Reset helpers
+        guideManager = nil
+        isCaptionSelected = false
+
+        // 8. Rebuild EVERYTHING like first launch
+        setUpVideoPlayer()
+    }
+    
+    private func resetProjectToInitialState() {
+
+        // Reset caption position
+        project.captionPositionX = 0
+        project.captionPositionY = 0
+
+        // Reset caption text to original transcription
+        let context = coreDataManager.persistentContainer.viewContext
+        let request: NSFetchRequest<TranscribedEntity> = TranscribedEntity.fetchRequest()
+
+        if let entities = try? context.fetch(request) {
+            for entity in entities {
+                entity.text = entity.text
+            }
+        }
+
+        coreDataManager.saveContext()
+    }
+
 }
 
 // MARK: Caption Data
@@ -532,33 +667,42 @@ extension CaptionVC: VideoTimelineViewDelegate {
         }
     }
     
-    func videoTimelineDidRenameWord(at index: Int, newText: String, objectID: NSManagedObjectID?) {
+    func videoTimelineDidRenameWord(at index: Int,newText: String,objectID: NSManagedObjectID?) {
         guard let objectID = objectID else { return }
-        let context = self.coreDataManager.persistentContainer.viewContext
-        
+
+        let context = coreDataManager.persistentContainer.viewContext
+
         context.perform {
             do {
-                if let entity = try context.existingObject(with: objectID) as? TranscribedEntity {
-                    entity.text = newText
-                    self.coreDataManager.saveContext()
-                    
-                    DispatchQueue.main.async {
-                        // A. Update the timeline UI immediately (Fixes the visual delay)
-                        self.videoTimelineView.updateWordSegmentText(at: index, newText: newText)
-                        
-                        // B. Refresh the video overlay/captions
-                        self.loadCaptionDataAndFormat()
-                        
-                        // C. Force redraw
-                        if let currentTime = self.player?.currentTime().seconds {
-                            self.handleTimeUpdate(currentTime: currentTime)
-                        }
-                        
-                        print("✅ Successfully renamed and updated UI")
-                    }
+                guard let entity = try context.existingObject(with: objectID) as? TranscribedEntity else {
+                    return
                 }
+
+                let oldText = entity.text ?? ""
+                guard oldText != newText else { return }
+
+                // ✅ REGISTER REDO
+                self.captionUndoManager.registerUndo(withTarget: self) { target in
+                    target.videoTimelineDidRenameWord(
+                        at: index,
+                        newText: oldText,
+                        objectID: objectID
+                    )
+                }
+
+                self.captionUndoManager.setActionName("Rename Word")
+
+                // Apply change
+                entity.text = newText
+                self.coreDataManager.saveContext()
+
+                DispatchQueue.main.async {
+                    self.refreshUIAfterUndoRedo()
+                    self.updateUndoRedoButtons()
+                }
+
             } catch {
-                print("❌ Error renaming word: \(error)")
+                print("❌ Rename error: \(error)")
             }
         }
     }
@@ -826,6 +970,7 @@ extension CaptionVC {
         switch gesture.state {
 
         case .began:
+            captionUndoManager.beginUndoGrouping()
             self.isCaptionSelected = true
             self.captionSelectionHideTimer?.invalidate()
             guides.beginDrag(videoRect: videoRect)
@@ -849,14 +994,22 @@ extension CaptionVC {
             let finalCenterX = playerViewCenterX + centerXConstraint.constant
             let finalCenterY = centerYConstraint.constant
 
+            let oldX = CGFloat(self.project.captionPositionX)
+            let oldY = CGFloat(self.project.captionPositionY)
+
+            captionUndoManager.registerUndo(withTarget: self) { target in
+                target.restoreCaptionPosition(x: oldX, y: oldY)
+            }
+
+            captionUndoManager.endUndoGrouping()
+
             self.saveCurrentCaptionPosition(
                 centerX: finalCenterX,
                 centerY: finalCenterY,
                 in: boundsView
             )
-
-            self.startCaptionHideTimer()
-
+            updateUndoRedoButtons()
+            
         default:
             break
         }
@@ -882,7 +1035,6 @@ extension CaptionVC {
         
         print("Caption Position Saved: X=\(String(format: "%.3f", normalizedX)), Y=\(String(format: "%.3f", normalizedY))")
     }
-    
     
     private func startCaptionHideTimer() {
             // Invalidate any existing timer first

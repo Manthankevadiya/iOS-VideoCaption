@@ -12,14 +12,6 @@ class LayoutGuideManager {
     private weak var containerView: UIView?
     
     // Made public (read-only) so VC can bringToFront if needed
-    
-    public let leftVerticalGuideLine: UIView = {
-        let v = UIView()
-        v.backgroundColor = .yellow
-        v.isHidden = true
-        return v
-    }()
-    
     public let verticalGuideLine: UIView = {
         let v = UIView()
         v.backgroundColor = .yellow
@@ -27,28 +19,7 @@ class LayoutGuideManager {
         return v
     }()
     
-    public let rightVerticalGuideLine: UIView = {
-        let v = UIView()
-        v.backgroundColor = .yellow
-        v.isHidden = true
-        return v
-    }()
-    
-    public let topHorizontalGuideLine: UIView = {
-        let v = UIView()
-        v.backgroundColor = .yellow
-        v.isHidden = true
-        return v
-    }()
-    
     public let horizontalGuideLine: UIView = {
-        let v = UIView()
-        v.backgroundColor = .yellow
-        v.isHidden = true
-        return v
-    }()
-    
-    public let bottomHorizontalGuideLine: UIView = {
         let v = UIView()
         v.backgroundColor = .yellow
         v.isHidden = true
@@ -101,12 +72,7 @@ class LayoutGuideManager {
         guard let container = containerView else { return }
         
         container.addSubview(verticalGuideLine)
-        container.addSubview(leftVerticalGuideLine)
-        container.addSubview(rightVerticalGuideLine)
-        
         container.addSubview(horizontalGuideLine)
-        container.addSubview(topHorizontalGuideLine)
-        container.addSubview(bottomHorizontalGuideLine)
         
         container.addSubview(safeTopLine)
         container.addSubview(safeBottomLine)
@@ -118,12 +84,7 @@ class LayoutGuideManager {
         guard let container = containerView else { return }
         
         container.bringSubviewToFront(verticalGuideLine)
-        container.bringSubviewToFront(leftVerticalGuideLine)
-        container.bringSubviewToFront(rightVerticalGuideLine)
-        
         container.bringSubviewToFront(horizontalGuideLine)
-        container.bringSubviewToFront(topHorizontalGuideLine)
-        container.bringSubviewToFront(bottomHorizontalGuideLine)
         
         container.bringSubviewToFront(safeTopLine)
         container.bringSubviewToFront(safeBottomLine)
@@ -140,121 +101,141 @@ class LayoutGuideManager {
         videoRect: CGRect,
         captionSize: CGSize
     ) -> CGPoint {
-
+        
         var snappedCenter = currentCenter
-
+        
         let midX = videoRect.midX
         let midY = videoRect.midY
-
-        let diffX = currentCenter.x - midX
-        let diffY = currentCenter.y - midY
-
-        // -----------------------
-        // VERTICAL CENTER LOGIC
-        // -----------------------
-
-        if abs(diffX) < visualGuideThreshold {
-            showVerticalGuide(at: midX, rect: videoRect)
-            showSecondaryVerticalGuides(centerX: midX, rect: videoRect)
-
-            let effectiveThreshold = isSnappedX ? snapThreshold + 5 : snapThreshold
-            if abs(diffX) < effectiveThreshold {
-                snappedCenter.x = midX
-                if !isSnappedX {
-                    triggerHaptic()
+        
+        // ------------------------------------------------
+        // VERTICAL GUIDES (LEFT – CENTER – RIGHT)
+        // ------------------------------------------------
+        
+        let verticalTargets = [
+            (x: midX, view: verticalGuideLine),
+        ]
+        
+        var didSnapX = false
+        
+        for target in verticalTargets {
+            let diff = currentCenter.x - target.x
+            
+            if abs(diff) < visualGuideThreshold {
+                target.view.frame = CGRect(
+                    x: target.x - 1,
+                    y: videoRect.minY,
+                    width: 2,
+                    height: videoRect.height
+                )
+                target.view.isHidden = false
+                
+                let effectiveThreshold = isSnappedX ? snapThreshold + 5 : snapThreshold
+                if abs(diff) < effectiveThreshold && !didSnapX {
+                    snappedCenter.x = target.x
+                    if !isSnappedX {
+                        triggerHaptic()
+                    }
                     isSnappedX = true
+                    didSnapX = true
                 }
             } else {
-                isSnappedX = false
+                target.view.isHidden = true
             }
-        } else {
-            hideVerticalGuide()
-            leftVerticalGuideLine.isHidden = true
-            rightVerticalGuideLine.isHidden = true
+        }
+        
+        if !didSnapX {
             isSnappedX = false
         }
-
-        // -----------------------
-        // HORIZONTAL CENTER LOGIC
-        // -----------------------
-
-        if abs(diffY) < visualGuideThreshold {
-            showHorizontalGuide(at: midY, rect: videoRect)
-            showSecondaryHorizontalGuides(centerY: midY, rect: videoRect)
-
-            let effectiveThreshold = isSnappedY ? snapThreshold + 5 : snapThreshold
-            if abs(diffY) < effectiveThreshold {
-                snappedCenter.y = midY
-                if !isSnappedY {
-                    triggerHaptic()
+        
+        // ------------------------------------------------
+        // HORIZONTAL GUIDES (TOP – CENTER – BOTTOM)
+        // ------------------------------------------------
+        
+        let horizontalTargets = [
+            (y: midY, view: horizontalGuideLine),
+        ]
+        
+        var didSnapY = false
+        
+        for target in horizontalTargets {
+            let diff = currentCenter.y - target.y
+            
+            if abs(diff) < visualGuideThreshold {
+                target.view.frame = CGRect(
+                    x: videoRect.minX,
+                    y: target.y - 1,
+                    width: videoRect.width,
+                    height: 2
+                )
+                target.view.isHidden = false
+                
+                let effectiveThreshold = isSnappedY ? snapThreshold + 5 : snapThreshold
+                if abs(diff) < effectiveThreshold && !didSnapY {
+                    snappedCenter.y = target.y
+                    if !isSnappedY {
+                        triggerHaptic()
+                    }
                     isSnappedY = true
+                    didSnapY = true
                 }
             } else {
-                isSnappedY = false
+                target.view.isHidden = true
             }
-        } else {
-            hideHorizontalGuide()
-            topHorizontalGuideLine.isHidden = true
-            bottomHorizontalGuideLine.isHidden = true
+        }
+        
+        if !didSnapY {
             isSnappedY = false
         }
-
-        // -----------------------
-        // SAFE AREA GUIDES
-        // -----------------------
-
+        
+        // ------------------------------------------------
+        // SAFE AREA GUIDES (CAPTION EDGES)
+        // ------------------------------------------------
+        
         let halfW = captionSize.width / 2
         let halfH = captionSize.height / 2
-
+        
         let minX = snappedCenter.x - halfW
         let maxX = snappedCenter.x + halfW
         let minY = snappedCenter.y - halfH
         let maxY = snappedCenter.y + halfH
-
+        
         safeTopLine.isHidden = abs(minY - videoRect.minY) >= safeAreaThreshold
         safeBottomLine.isHidden = abs(maxY - videoRect.maxY) >= safeAreaThreshold
         safeLeftLine.isHidden = abs(minX - videoRect.minX) >= safeAreaThreshold
         safeRightLine.isHidden = abs(maxX - videoRect.maxX) >= safeAreaThreshold
-
+        
         if !safeTopLine.isHidden {
-            safeTopLine.frame = CGRect(x: videoRect.minX, y: videoRect.minY - 1,
+            safeTopLine.frame = CGRect(x: videoRect.minX, y: videoRect.minY + 12,
                                        width: videoRect.width, height: 2)
         }
-
+        
         if !safeBottomLine.isHidden {
-            safeBottomLine.frame = CGRect(x: videoRect.minX, y: videoRect.maxY - 1,
+            safeBottomLine.frame = CGRect(x: videoRect.minX, y: videoRect.maxY - 12,
                                           width: videoRect.width, height: 2)
         }
-
+        
         if !safeLeftLine.isHidden {
-            safeLeftLine.frame = CGRect(x: videoRect.minX - 1, y: videoRect.minY,
+            safeLeftLine.frame = CGRect(x: videoRect.minX + 12, y: videoRect.minY,
                                         width: 2, height: videoRect.height)
         }
-
+        
         if !safeRightLine.isHidden {
-            safeRightLine.frame = CGRect(x: videoRect.maxX - 1, y: videoRect.minY,
+            safeRightLine.frame = CGRect(x: videoRect.maxX - 12, y: videoRect.minY,
                                          width: 2, height: videoRect.height)
         }
-
+        
         return snappedCenter
     }
     
     func endDrag() {
         verticalGuideLine.isHidden = true
-        leftVerticalGuideLine.isHidden = true
-        rightVerticalGuideLine.isHidden = true
-        
         horizontalGuideLine.isHidden = true
-        topHorizontalGuideLine.isHidden = true
-        bottomHorizontalGuideLine.isHidden = true
         
         safeTopLine.isHidden = true
         safeBottomLine.isHidden = true
         safeLeftLine.isHidden = true
         safeRightLine.isHidden = true
     }
-    
-    
     
     private func showVerticalGuide(at x: CGFloat, rect: CGRect) {
         verticalGuideLine.frame = CGRect(x: x - 1, y: rect.minY, width: 2, height: rect.height)
@@ -277,48 +258,5 @@ class LayoutGuideManager {
     private func triggerHaptic() {
         feedbackGenerator.selectionChanged()
     }
-    
-    private func showSecondaryVerticalGuides(centerX: CGFloat, rect: CGRect) {
-        let spacing = rect.width / 4
-
-        leftVerticalGuideLine.frame = CGRect(
-            x: centerX - spacing - 1,
-            y: rect.minY,
-            width: 2,
-            height: rect.height
-        )
-
-        rightVerticalGuideLine.frame = CGRect(
-            x: centerX + spacing - 1,
-            y: rect.minY,
-            width: 2,
-            height: rect.height
-        )
-
-        leftVerticalGuideLine.isHidden = false
-        rightVerticalGuideLine.isHidden = false
-    }
-
-    private func showSecondaryHorizontalGuides(centerY: CGFloat, rect: CGRect) {
-        let spacing = rect.height / 4
-
-        topHorizontalGuideLine.frame = CGRect(
-            x: rect.minX,
-            y: centerY - spacing - 1,
-            width: rect.width,
-            height: 2
-        )
-
-        bottomHorizontalGuideLine.frame = CGRect(
-            x: rect.minX,
-            y: centerY + spacing - 1,
-            width: rect.width,
-            height: 2
-        )
-
-        topHorizontalGuideLine.isHidden = false
-        bottomHorizontalGuideLine.isHidden = false
-    }
-
     
 }

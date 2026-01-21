@@ -35,8 +35,8 @@ struct ExportConfiguration {
 }
 
 struct TimedWord: Equatable {
-    let word: String
-    let startTime: TimeInterval
+    var word: String
+    var startTime: TimeInterval
     var duration: TimeInterval
 }
 

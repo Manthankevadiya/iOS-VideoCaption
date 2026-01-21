@@ -240,6 +240,19 @@
                                             <action selector="clickOnBack:" destination="HqC-dn-b2h" eventType="touchUpInside" id="f5S-BU-ylf"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YIT-cf-ceM">
+                                        <rect key="frame" x="74" y="10" width="24" height="24"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="24" id="GLP-uM-hMK"/>
+                                            <constraint firstAttribute="height" constant="24" id="cJa-Yw-hHc"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="arrow.uturn.left" catalog="system"/>
+                                        <connections>
+                                            <action selector="clickOnUndo:" destination="HqC-dn-b2h" eventType="touchUpInside" id="iMx-tk-6wm"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwQ-cb-fne">
                                         <rect key="frame" x="299" y="5" width="56" height="34"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
@@ -251,13 +264,34 @@
                                             <action selector="clickOnExport:" destination="HqC-dn-b2h" eventType="touchUpInside" id="fRp-ZW-xC7"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rbB-rS-f8k">
+                                        <rect key="frame" x="108" y="10" width="24" height="24"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="24" id="Al4-3o-WTy"/>
+                                            <constraint firstAttribute="height" constant="24" id="aVW-3X-vFL"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="arrow.uturn.right" catalog="system"/>
+                                        <connections>
+                                            <action selector="clickOnRedo:" destination="HqC-dn-b2h" eventType="touchUpInside" id="LUA-cD-7R3"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="x4L-Ae-FDI" firstAttribute="bottom" secondItem="YIT-cf-ceM" secondAttribute="bottom" id="54W-Fc-G59"/>
+                                    <constraint firstItem="YIT-cf-ceM" firstAttribute="top" secondItem="rbB-rS-f8k" secondAttribute="top" id="E3B-Kc-Wkf"/>
+                                    <constraint firstItem="YIT-cf-ceM" firstAttribute="centerY" secondItem="rbB-rS-f8k" secondAttribute="centerY" id="J61-2a-ZC8"/>
+                                    <constraint firstItem="rbB-rS-f8k" firstAttribute="leading" secondItem="YIT-cf-ceM" secondAttribute="trailing" constant="10" id="ThZ-fm-3lp"/>
+                                    <constraint firstItem="x4L-Ae-FDI" firstAttribute="top" secondItem="YIT-cf-ceM" secondAttribute="top" id="at6-QN-kF4"/>
+                                    <constraint firstItem="x4L-Ae-FDI" firstAttribute="centerY" secondItem="YIT-cf-ceM" secondAttribute="centerY" id="ba9-yR-WU4"/>
                                     <constraint firstItem="cwQ-cb-fne" firstAttribute="centerY" secondItem="AkO-tz-rtG" secondAttribute="centerY" id="iLx-PG-JLf"/>
+                                    <constraint firstItem="YIT-cf-ceM" firstAttribute="leading" secondItem="x4L-Ae-FDI" secondAttribute="trailing" constant="30" id="jLj-p6-Ohz"/>
                                     <constraint firstItem="x4L-Ae-FDI" firstAttribute="centerY" secondItem="AkO-tz-rtG" secondAttribute="centerY" id="lIj-w6-Ml7"/>
                                     <constraint firstAttribute="height" constant="44" id="lve-MX-9sy"/>
                                     <constraint firstItem="x4L-Ae-FDI" firstAttribute="leading" secondItem="AkO-tz-rtG" secondAttribute="leading" constant="20" id="sTt-SK-Sdr"/>
+                                    <constraint firstItem="YIT-cf-ceM" firstAttribute="bottom" secondItem="rbB-rS-f8k" secondAttribute="bottom" id="yTa-fi-H5a"/>
                                     <constraint firstAttribute="trailing" secondItem="cwQ-cb-fne" secondAttribute="trailing" constant="20" id="yj9-AI-Xm3"/>
                                 </constraints>
                             </view>
@@ -292,15 +326,16 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="IjE-8C-5lt">
                                                 <rect key="frame" x="137.5" y="0.0" width="117.5" height="51"/>
                                                 <subviews>
-                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_edit" translatesAutoresizingMaskIntoConstraints="NO" id="ZJ1-If-Fxw">
-                                                        <rect key="frame" x="47" y="0.0" width="24" height="24"/>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="arrow.clockwise" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="ZJ1-If-Fxw">
+                                                        <rect key="frame" x="47" y="-1" width="24" height="24"/>
+                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="24" id="6da-tM-lGF"/>
                                                             <constraint firstAttribute="height" constant="24" id="Y6M-BB-j2w"/>
                                                         </constraints>
                                                     </imageView>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Edit" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MLG-YJ-jKO">
-                                                        <rect key="frame" x="46" y="34" width="26" height="17"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reset" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MLG-YJ-jKO">
+                                                        <rect key="frame" x="40" y="34" width="38" height="17"/>
                                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                                                         <color key="textColor" name="Color_FFFFFF"/>
                                                         <nil key="highlightedColor"/>
@@ -375,6 +410,8 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="btn_redo" destination="rbB-rS-f8k" id="2tt-02-jf8"/>
+                        <outlet property="btn_undo" destination="YIT-cf-ceM" id="aeW-dc-5pQ"/>
                         <outlet property="view_videoContainer" destination="4aa-m8-WHz" id="of9-Kk-WQg"/>
                         <outlet property="view_videoTimelineContainer" destination="V8X-lg-2oW" id="Q1h-lH-VUx"/>
                     </connections>
@@ -1056,11 +1093,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="arrow.clockwise" catalog="system" width="110" height="128"/>
+        <image name="arrow.uturn.left" catalog="system" width="128" height="113"/>
+        <image name="arrow.uturn.right" catalog="system" width="128" height="113"/>
         <image name="ic_back" width="24" height="24"/>
         <image name="ic_captionStyle" width="24" height="24"/>
         <image name="ic_close" width="24" height="24"/>
         <image name="ic_done" width="24" height="24"/>
-        <image name="ic_edit" width="24" height="24"/>
         <image name="ic_font" width="24" height="24"/>
         <image name="ic_fontColor" width="24" height="24"/>
         <image name="ic_grediant_bg" width="335" height="48"/>
