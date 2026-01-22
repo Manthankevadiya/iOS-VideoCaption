@@ -68,3 +68,16 @@ struct WordSegment {
     var duration: Double
     var end: Double { start + duration }
 }
+
+struct CaptionStyleState {
+    var fontName: String
+    var fontSize: CGFloat
+    var fontColor: String
+    var highlightColor: String
+    var borderColor: String
+    var borderSize: CGFloat
+    var shadowColor: String
+    var shadowRadius: CGFloat
+    var animationIndex: Int
+}
+

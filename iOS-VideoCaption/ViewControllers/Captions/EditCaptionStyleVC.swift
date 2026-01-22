@@ -36,6 +36,10 @@ class EditCaptionStyleVC: UIViewController {
     var selectedEditStyle : EditCaptionType = .animationStyle
     var selectedColourType : CaptionColorType = .fontColor
     
+    private var undoManagerRef: UndoManager {
+        return GlobalUndoManager.shared.undoManager
+    }
+    
     private let captionAnimationStyles: [TextAnimationStyle] = [
         .normal,
         .fadeWord,
@@ -178,15 +182,17 @@ class EditCaptionStyleVC: UIViewController {
     
     @objc func handleTap(_ gesture: UITapGestureRecognizer) {
         guard let view = gesture.view else { return }
+        let oldState = currentCaptionState()
         
         let index = view.tag
-        guard index >= 0, index < self.captionAnimationStyles.count else { return }
+        guard index != selectedAnimationIndex else { return }
         
-        print("Tapped view index:", view.tag)
-        if self.selectedAnimationIndex != index {
-            self.selectedAnimationIndex = index
-            self.setSelctedCaptionContainer()
-            self.scrollToSelectedAnimation()
+        selectedAnimationIndex = index
+        setSelctedCaptionContainer()
+        scrollToSelectedAnimation()
+        
+        undoManagerRef.registerUndo(withTarget: self) { targetSelf in
+            targetSelf.restoreCaptionState(oldState)
         }
     }
     
@@ -314,27 +320,31 @@ class EditCaptionStyleVC: UIViewController {
     }
     
     @objc func fontSizeSliderChanged(_ sender: UISlider) {
-        self.selectedFontSize = CGFloat(sender.value)
-        self.lbl_caption.font = self.selectedFont?.withSize(self.selectedFontSize)
+        let oldState = currentCaptionState() // capture old state for undo
         
-        self.setSelctedCaptionContainer()
+        selectedFontSize = CGFloat(sender.value)
+        lbl_caption.font = selectedFont?.withSize(selectedFontSize)
+        setSelctedCaptionContainer()
+        
+        undoManagerRef.registerUndo(withTarget: self) { targetSelf in
+            targetSelf.restoreCaptionState(oldState)
+        }
     }
     
     @objc func borderShadowSliderChanged(_ sender: UISlider) {
+        let oldState = currentCaptionState()
         
         switch segment_colours.selectedSegmentIndex {
-            
-        case 2: // Border
-            selectedBorderSize = CGFloat(sender.value)
-            
-        case 3: // Shadow
-            selectedShadhowRadius = CGFloat(sender.value)
-            
-        default:
-            return
+        case 2: selectedBorderSize = CGFloat(sender.value)
+        case 3: selectedShadhowRadius = CGFloat(sender.value)
+        default: return
         }
         
-        self.setSelctedCaptionContainer()
+        setSelctedCaptionContainer()
+        
+        undoManagerRef.registerUndo(withTarget: self) { targetSelf in
+            targetSelf.restoreCaptionState(oldState)
+        }
     }
     
     @IBAction func clickOnCaptionAnimation(_ sender: Any) {
@@ -431,6 +441,40 @@ extension EditCaptionStyleVC {
         }
     }
     
+    private func restoreCaptionState(_ state: CaptionStyleState) {
+        selectedFont = UIFont(name: state.fontName, size: state.fontSize)
+        selectedFontSize = state.fontSize
+        selectedFontColour = state.fontColor
+        selectedHighlightColour = state.highlightColor
+        selectedBorderColour = state.borderColor
+        selectedBorderSize = state.borderSize
+        selectedShadowColour = state.shadowColor
+        selectedShadhowRadius = state.shadowRadius
+        selectedAnimationIndex = state.animationIndex
+
+        // Apply to UI
+        lbl_caption.font = selectedFont?.withSize(selectedFontSize)
+        lbl_caption.textColor = UIColor(hex: selectedFontColour)
+        slider_fontSize.value = Float(selectedFontSize)
+        slider_textborder.value = Float(selectedBorderSize)
+        setSelctedCaptionContainer()
+        setCaptionAnimation()
+    }
+
+    private func currentCaptionState() -> CaptionStyleState {
+        return CaptionStyleState(
+            fontName: selectedFont?.fontName ?? "",
+            fontSize: selectedFontSize,
+            fontColor: selectedFontColour,
+            highlightColor: selectedHighlightColour,
+            borderColor: selectedBorderColour,
+            borderSize: selectedBorderSize,
+            shadowColor: selectedShadowColour,
+            shadowRadius: selectedShadhowRadius,
+            animationIndex: selectedAnimationIndex
+        )
+    }
+
 }
 
 extension EditCaptionStyleVC: UIPickerViewDelegate, UIPickerViewDataSource {
@@ -462,11 +506,15 @@ extension EditCaptionStyleVC: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let oldState = currentCaptionState()
         let selectedFontName = self.fontNames[row]
-        self.lbl_caption.font = UIFont(name: selectedFontName, size: self.selectedFontSize)
         self.selectedFont = UIFont(name: selectedFontName, size: self.selectedFontSize)
-        
+        self.lbl_caption.font = self.selectedFont
         self.setSelctedCaptionContainer()
+        
+        undoManagerRef.registerUndo(withTarget: self) { targetSelf in
+            targetSelf.restoreCaptionState(oldState)
+        }
         print(selectedFontName)
     }
     
@@ -537,10 +585,11 @@ extension EditCaptionStyleVC: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let oldState = currentCaptionState()
+        
         switch self.selectedColourType {
         case .fontColor:
             self.selectedFontColour = self.colourNames[indexPath.row]
-            self.lbl_caption.textColor = UIColor(hex: self.colourNames[indexPath.row])
         case .highlightColor:
             self.selectedHighlightColour = self.colourNames[indexPath.row]
         case .borderColor:
@@ -549,13 +598,11 @@ extension EditCaptionStyleVC: UICollectionViewDelegate, UICollectionViewDataSour
             self.selectedShadowColour = self.colourNames[indexPath.row]
         }
         
-        self.lbl_caption.textColor = UIColor(hex: self.selectedFontColour)
+        restoreCaptionState(currentCaptionState()) // apply immediately
         
-        self.cv_colours.reloadData()
-        self.scrollToSelectedColour()
-        
-        self.setCaptionAnimation()
-        self.setSelctedCaptionContainer()
+        undoManagerRef.registerUndo(withTarget: self) { targetSelf in
+            targetSelf.restoreCaptionState(oldState)
+        }
     }
     
 }

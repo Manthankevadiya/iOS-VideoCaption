@@ -80,12 +80,21 @@ class CaptionVC: UIViewController {
     private var captionSelectionHideTimer: Timer?
     private var wordRenamePanel: WordRenamePanelView?
     
-    private let captionUndoManager = UndoManager()
+    private var captionUndoManager: UndoManager {
+        return GlobalUndoManager.shared.undoManager
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpVideoPlayer()
         self.updateUndoRedoButtons()
+        
+        NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleGlobalUndoManagerChange),
+                name: .UndoManagerDidChange,
+                object: nil
+            )
     }
     
     override func viewDidLayoutSubviews() {
@@ -129,6 +138,10 @@ class CaptionVC: UIViewController {
         super.viewWillDisappear(animated)
         self.removePlaybackObservers()
         self.removeCaptionTimeObserver()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .UndoManagerDidChange, object: nil)
     }
     
     @IBAction func clickOnExport(_ sender: Any) {
@@ -259,6 +272,9 @@ class CaptionVC: UIViewController {
         self.presentResetConfirmation()
     }
     
+    @objc private func handleGlobalUndoManagerChange() {
+        updateUndoRedoButtons()
+    }
 }
 
 // MARK: Player SetUp
@@ -427,8 +443,9 @@ extension CaptionVC {
         let currentY = CGFloat(self.project.captionPositionY)
 
         // 2. REGISTER REDO
-        captionUndoManager.registerUndo(withTarget: self) { target in
-            target.restoreCaptionPosition(x: currentX, y: currentY)
+        captionUndoManager.registerUndo(withTarget: self) { [weak self] target in
+            guard let self = self else { return }
+            self.restoreCaptionPosition(x: currentX, y: currentY)
         }
 
         captionUndoManager.setActionName("Move Caption")
@@ -682,7 +699,8 @@ extension CaptionVC: VideoTimelineViewDelegate {
                 guard oldText != newText else { return }
 
                 // ✅ REGISTER REDO
-                self.captionUndoManager.registerUndo(withTarget: self) { target in
+                self.captionUndoManager.registerUndo(withTarget: self) { [weak self] target in
+                    guard let self = self else { return }
                     target.videoTimelineDidRenameWord(
                         at: index,
                         newText: oldText,
@@ -997,7 +1015,8 @@ extension CaptionVC {
             let oldX = CGFloat(self.project.captionPositionX)
             let oldY = CGFloat(self.project.captionPositionY)
 
-            captionUndoManager.registerUndo(withTarget: self) { target in
+            captionUndoManager.registerUndo(withTarget: self) { [weak self] target in
+                guard let self = self else { return }
                 target.restoreCaptionPosition(x: oldX, y: oldY)
             }
 
