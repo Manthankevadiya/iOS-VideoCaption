@@ -17,7 +17,9 @@ class GlobalUndoManager {
     let undoManager = UndoManager()
     
     private init() {
-        // Observe changes in the undo manager
+        undoManager.levelsOfUndo = 50 // Increase undo stack size
+        
+        // Observe ALL undo manager changes
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleUndoManagerChange),
@@ -33,13 +35,22 @@ class GlobalUndoManager {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleUndoManagerChange),
-            name: .NSUndoManagerWillCloseUndoGroup,
+            name: .NSUndoManagerDidCloseUndoGroup,
+            object: undoManager
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleUndoManagerChange),
+            name: .NSUndoManagerDidOpenUndoGroup,
             object: undoManager
         )
     }
     
     @objc private func handleUndoManagerChange() {
-        // Notify observers that undo/redo availability may have changed
         NotificationCenter.default.post(name: .UndoManagerDidChange, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
